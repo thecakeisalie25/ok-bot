@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const config = require ('./config.json');
 // When ON log to console.
 client.on('ready', () => {
-    console.log('Alright, we\'re up and running!')
+    console.log('---Alright, we\'re up and running!---')
 });
 
 client.on('message', message => {
@@ -12,4 +13,4 @@ client.on('message', message => {
     }
 })
 
-client.login('MzkyMDkzNzg0NzgwODMyNzY4.DRuCBQ._0nwbTTceac3PRhecXyJa3lGnbk');
+client.login('config.auth-token');

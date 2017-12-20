@@ -6,7 +6,10 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-    console.log(message.content);
+    // console.log(message.content);
+    if (message.content === 'ok.status'){
+        message.channel.send('i\'m doin ok.')
+    }
 })
 
 client.login('MzkyMDkzNzg0NzgwODMyNzY4.DRuCBQ._0nwbTTceac3PRhecXyJa3lGnbk');

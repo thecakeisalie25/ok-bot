@@ -13,4 +13,4 @@ client.on('message', message => {
     }
 })
 
-client.login('config.auth-token');
+client.login(config.token);

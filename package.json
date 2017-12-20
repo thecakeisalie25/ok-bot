@@ -1,0 +1,22 @@
+{
+  "name": "ok-bot",
+  "version": "1.0.0",
+  "description": "ChristianMomsAgainstRobots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thecakeisalie25/ok-bot.git"
+  },
+  "author": "@thecakeisalie25#0517 (134509976956829697)",
+  "license": "MIT, but im not gonna enforce anything",
+  "bugs": {
+    "url": "https://github.com/thecakeisalie25/ok-bot/issues"
+  },
+  "homepage": "https://github.com/thecakeisalie25/ok-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.2.1"
+  }
+}

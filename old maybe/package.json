@@ -1,0 +1,8 @@
+{
+    "name": "ok-bot",
+    "version": "1.0.0",
+    "description": "ChristianMomsAgainstRobots",
+    "main": "bot.js",
+    "author": "@thecakeisalie25#0517",
+    "dependencies": {}
+}

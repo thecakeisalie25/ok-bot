@@ -20,9 +20,10 @@ client.on('message', message => {
     }else if (message.content === `${prefix}whoami`){
         message.channel.send(`You are ${message.author.username}\nAnd your ID is ${message.author.id}`);
     }else if (message.content === `${prefix}kill`){
-        if (message.author.id === `134509976956829697`){message.channel.send(`temp.nokill`);}
+        if (message.author.id === `134509976956829697`){
+            client.destroy();
+        }
         else {message.channel.send(`fuck off`);}
     }
 })
-
 client.login(token);

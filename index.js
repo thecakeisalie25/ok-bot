@@ -10,10 +10,13 @@ client.on('message', message => {
     // console.log(message.content);
     if (message.content === `${prefix}status`){
         message.channel.send(`i\'m doin ok.`);
-    }else if (message.content === `${prefix}members`) {
+    }else if (message.content === `${prefix}members`){
         message.channel.send(`${message.guild.name} has (${message.guild.memberCount}) members`);
     }else if (message.content === `${prefix}whoami`){
         message.channel.send(`You are ${message.author.username}\nAnd your ID is ${message.author.id}`);
+    }else if (message.content.startsWith(`${prefix}game`)){
+        message.channel.send(`:${message.content}`);
+        console.log(`game command rec`);
     }
 })
 

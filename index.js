@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token} = require ('./config.json');
+const arrayid = [`134509976956829697`,`120264409934200832`]
 // When ON log to console.
 client.on('ready', () => {
     console.log('---Alright, we\'re up and running!---')
@@ -25,6 +26,16 @@ client.on('message', message => {
             client.destroy();
         }
         else {message.channel.send(`fuck off`);}
-    }
+    }else if (message.content.startsWith(`${prefix}whois`)){
+        if(!message.mentions.users.size){message.channel.send(`Nope, try again!`);}
+        else if(message.mentions.users.size === 1){message.channel.send(`They are ${message.mentions.users.first().username}\nAnd their ID is ${message.mentions.users.first().id}`);}
+        else{message.channel.send(`nah :b:`);}
+    }else if(message.content === `${prefix}wip-id`){
+        // WIP meant to get a user by id and get username from that.
+        if(message.author.id === `134509976956829697`){
+            message.channel.send(`you are the boi`);
+        }else{message.channel.send(`you are NOT the boi`);}
+    }else if(arrayid.contains(`${args[0]}`)){message.channel.send(`yeah`)}
+
 })
 client.login(token);

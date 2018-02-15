@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const {prefix, token} = require ('./config.json');
+const {prefix, token, admin} = require ('./config.json');
 var   activepoll = false;
+var   pollstarter;
 // When ON log to console.
 client.on('ready', () => 
     {
@@ -38,7 +39,7 @@ client.on('message', message => {
 
             case "kill":
 
-                if (message.author.id === `134509976956829697`)
+                if (message.author.id === admin)
                 { // @thecakeisalie25#0517 at current time of writing
                     message.channel.send(`k lol bye`);
                     return client.destroy();
@@ -63,7 +64,7 @@ client.on('message', message => {
 
             case "wip-id":
         
-                if(message.author.id === `134509976956829697`)
+                if(message.author.id === admin)
                 {
                     message.channel.send(`you are the boi`);
                 }
@@ -136,7 +137,7 @@ client.on('message', message => {
                 {
                     message.reply(`I'm not the smartest bot, please use y or n only.`)
                 }
-                else if (args[0]  == "y" || args[0]  == "n") // TODO Track votes
+                else if (args[0]  == "y" || args[0]  == "n") // TODO Actually track votes
                 {
                     message.reply(`Your vote has been counted.\nActually, it hasn't, as there's no database in place yet.`)
                 }
@@ -156,14 +157,23 @@ client.on('message', message => {
                         message.channel.send(`There is no active poll. You can start one by writing a question after ${prefix}poll.`);
                     }
                 }
-                else if (args[0] == "stop") // TODO prevent subversion of democracy by making people end what they started (or me lol)
+                else if (args[0] == "stop")
                 {
-                    activepoll = false;
-                    message.channel.send(`Alright, poll unset.`);
+                    if (message.author.id == pollstarter.id || message.author.id == admin)
+                    {
+                        activepoll = false;
+                        pollstarter = null;
+                        message.channel.send(`Alright, poll unset.`);
+                    }
+                    else
+                    {
+                        message.channel.send(`You didn't start this poll, so you can't end it.\n This poll was started by ${pollstarter.username}`);
+                    }
                 }
                 else
                 {
                     activepoll = message.content.slice(prefix.length + 5);
+                    pollstarter = message.author;
                     message.channel.send(`Alright, poll set.`);
                 }
 

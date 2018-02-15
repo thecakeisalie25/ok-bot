@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token} = require ('./config.json');
+var   poll = false;
 // When ON log to console.
 client.on('ready', () => 
     {
@@ -12,30 +13,30 @@ client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     console.log(message.content);
     const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowercase ();
+    const command = args.shift()/*.toLowercase()*/;
 
     switch (command)
     {
             // console.log(message.content);
-            case status:
+            case "status":
 
                 message.channel.send(`i'm doin ok.`);
             
             break;
 
-            case members:
+            case "members":
 
                 message.channel.send(`${message.guild.name} has (${message.guild.memberCount}) members`);
             
             break;
 
-            case whoami:
+            case "whoami":
 
                 message.channel.send(`You are ${message.author.username}\nAnd your ID is ${message.author.id}`);
             
             break;
 
-            case kill:
+            case "kill":
 
                 if (message.author.id === `134509976956829697`)
                 { // @thecakeisalie25#0517 at current time of writing
@@ -46,7 +47,7 @@ client.on('message', message => {
             
             break;
 
-            case whois:
+            case "whois":
         
                 if(!message.mentions.users.size)
                 {
@@ -60,7 +61,7 @@ client.on('message', message => {
             
             break;
 
-            case wip-id:
+            case "wip-id":
         
                 if(message.author.id === `134509976956829697`)
                 {
@@ -73,7 +74,7 @@ client.on('message', message => {
             
             break;
 
-            case args:
+            case "args":
         
                 if (!args.length)
                 {
@@ -87,7 +88,7 @@ client.on('message', message => {
             
             break;
 
-            case isthot:
+            case "isthot":
         
                 if(args[0] === '@everyone' || args[0] === '@here')
                 {
@@ -103,7 +104,7 @@ client.on('message', message => {
             
             break;
 
-            case avatar:
+            case "avatar":
         
                 if (!message.mentions.users.size) 
                 {
@@ -116,6 +117,50 @@ client.on('message', message => {
             
             break;
 
-}} 
+            case "vote":
+
+                if (message.guild)
+                {
+                    message.reply(`Public voting is disallowed, please DM the bot instead.`);
+                    message.delete();
+                }
+                else if (!poll)
+                {
+                    message.reply(`There's no active poll, but I love the enthusiasm!`);
+                }
+                else if (!args)
+                {
+                    message.reply(`You can vote on the active poll using ${prefix}vote <y or n>`);
+                }
+                else if (args[0] !== "y" && args[0] !== "n")
+                {
+                    message.reply(`I'm not the smartest bot, please use y or n only.`)
+                }
+                else if (args[0]  == "y" || args[0]  == "n")
+                {
+                    message.reply(`Your vote has been counted.\nActually, it hasn't, as there's no database in place yet.`)
+                }
+
+            break;
+
+            case "poll":
+
+                if (!args)
+                {
+                    message.channel.send(`Nope. Try again, next time with more enthusiasm.`);
+                }
+                else if (args[0] = "stop")
+                {
+                    poll = false;
+                    message.channel.send(`Alright, poll unset.`);
+                }
+                else
+                {
+                    poll = args;
+                    message.channel.send(`Alright, poll set.`);
+                }
+
+            break;
+}})
 
 client.login(token);

@@ -163,7 +163,7 @@ client.on('message', message => {
                 }
                 else
                 {
-                    activepoll = args;
+                    activepoll = message.content.slice(prefix.length + 5);
                     message.channel.send(`Alright, poll set.`);
                 }
 

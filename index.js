@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token} = require ('./config.json');
-var   poll = false;
+var   activepoll = false;
 // When ON log to console.
 client.on('ready', () => 
     {
@@ -124,19 +124,19 @@ client.on('message', message => {
                     message.reply(`Public voting is disallowed, please DM the bot instead.`);
                     message.delete();
                 }
-                else if (!poll)
+                else if (!activepoll)
                 {
                     message.reply(`There's no active poll, but I love the enthusiasm!`);
                 }
-                else if (!args)
+                else if (!args.length)
                 {
-                    message.reply(`You can vote on the active poll using ${prefix}vote <y or n>`);
+                    message.reply(`You can vote on the active poll using ${prefix}vote <y or n>\nFor reference, the active poll: ${activepoll}`);
                 }
                 else if (args[0] !== "y" && args[0] !== "n")
                 {
                     message.reply(`I'm not the smartest bot, please use y or n only.`)
                 }
-                else if (args[0]  == "y" || args[0]  == "n")
+                else if (args[0]  == "y" || args[0]  == "n") // TODO Track votes
                 {
                     message.reply(`Your vote has been counted.\nActually, it hasn't, as there's no database in place yet.`)
                 }
@@ -145,18 +145,25 @@ client.on('message', message => {
 
             case "poll":
 
-                if (!args)
+                if (!args.length)
                 {
-                    message.channel.send(`Nope. Try again, next time with more enthusiasm.`);
+                    if (activepoll)
+                    {
+                        message.channel.send(activepoll);
+                    }
+                    else if (!activepoll)
+                    {
+                        message.channel.send(`There is no active poll. You can start one by writing a question after ${prefix}poll.`);
+                    }
                 }
-                else if (args[0] = "stop")
+                else if (args[0] == "stop") // TODO prevent subversion of democracy by making people end what they started (or me lol)
                 {
-                    poll = false;
+                    activepoll = false;
                     message.channel.send(`Alright, poll unset.`);
                 }
                 else
                 {
-                    poll = args;
+                    activepoll = args;
                     message.channel.send(`Alright, poll set.`);
                 }
 

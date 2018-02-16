@@ -1,8 +1,8 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const {prefix, token, admin} = require ('./config.json');
-const pollschannel = client.channels.get('351469894161924096');
+const   Discord = require('discord.js');
+const   client = new Discord.Client();
+const   {prefix, token, admin} = require ('./config.json');
 
+var     pollschannel;
 var     activepoll = false;
 var     pollstarter;
 var     votes = [];
@@ -16,6 +16,8 @@ client.on('ready', () =>
     {
     console.log('---Alright, we\'re up and running!---');
     client.user.setActivity(`for commands`, {type:'WATCHING'});
+    pollschannel = client.channels.get('392098161054711808');
+    // console.log(pollschannel);
     });
 
 client.on('message', message => {

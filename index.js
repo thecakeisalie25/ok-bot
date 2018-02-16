@@ -150,7 +150,7 @@ client.on('message', message => {
                 {
                     for(var i = 0; i < votes.length; i++)
                     {
-                        if(votes[i][0].id = message.author.id)
+                        if(votes[i][0].id == message.author.id)
                         {
                             message.channel.send(`Sorry, you've voted on this poll before.`);
                             userhasvoted = true

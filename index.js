@@ -1,13 +1,21 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {prefix, token, admin} = require ('./config.json');
-var   activepoll = false;
-var   pollstarter;
+const pollschannel = client.channels.get('351469894161924096');
+
+var     activepoll = false;
+var     pollstarter;
+var     votes = [];
+var     userhasvoted = false;
+var     votetotal;
+var     yvotes = 0;
+var     nvotes = 0;
+
 // When ON log to console.
 client.on('ready', () => 
     {
     console.log('---Alright, we\'re up and running!---');
-
+    client.user.setActivity(`for commands`, {type:'WATCHING'});
     });
 
 client.on('message', message => {
@@ -124,6 +132,7 @@ client.on('message', message => {
                 {
                     message.reply(`Public voting is disallowed, please DM the bot instead.`);
                     message.delete();
+                    message.author.send(`Vote here with ${prefix}vote <y or n>`);
                 }
                 else if (!activepoll)
                 {
@@ -139,12 +148,25 @@ client.on('message', message => {
                 }
                 else if (args[0]  == "y" || args[0]  == "n") // TODO Actually track votes
                 {
-                    message.reply(`Your vote has been counted.\nActually, it hasn't, as there's no database in place yet.`)
+                    for(var i = 0; i < votes.length; i++)
+                    {
+                        if(votes[i][0].id = message.author.id)
+                        {
+                            message.channel.send(`Sorry, you've voted on this poll before.`);
+                            userhasvoted = true
+                        }
+                    }
+                    if(!userhasvoted)
+                    {
+                        votes.push([message.author, args[0]]);
+                        message.reply(`Your vote has been counted.`)
+                    }
+                    
                 }
 
             break;
 
-            case "poll":
+            case "poll": // ok.poll | ok.poll [Is the earth flat?] | ok.poll stop
 
                 if (!args.length)
                 {
@@ -157,24 +179,45 @@ client.on('message', message => {
                         message.channel.send(`There is no active poll. You can start one by writing a question after ${prefix}poll.`);
                     }
                 }
-                else if (args[0] == "stop")
+                else if (args[0] == "end")
                 {
                     if (message.author.id == pollstarter.id || message.author.id == admin)
                     {
                         activepoll = false;
                         pollstarter = null;
                         message.channel.send(`Alright, poll unset.`);
+
+                        for(var i = 0; i < votes.length; i++)
+                        {
+                            if(votes[i][1] == "y")
+                            {
+                                votetotal++;
+                                yvotes++;
+                            }
+                            else if(votes[i][1] == "n")
+                            {
+                                votetotal--;
+                                nvotes++;
+                            }
+                            else
+                            {
+                                pollschannel.send("There was an error recounting votes. Vote counting will continue, but may not be accurate.");
+                            }
+                        }
+
+                        pollschannel.send(`Voting results: ${votetotal}\nVotes are calculated as (y - n)\nVotes for yes: ${yvotes}\nVotes for no: ${nvotes}`);
+
                     }
                     else
-                    {
-                        message.channel.send(`You didn't start this poll, so you can't end it.\n This poll was started by ${pollstarter.username}`);
+                    { // make it so that you can only end a poll in a guild and also make it so that it prints the results
+                        message.channel.send(`You didn't start this poll, so you can't end it. If they've forgotten, message Larson.`); 
                     }
                 }
                 else
                 {
                     activepoll = message.content.slice(prefix.length + 5);
                     pollstarter = message.author;
-                    message.channel.send(`Alright, poll set.`);
+                    message.channel.send(`Alright, poll set. Do ${prefix}end to close the voting and display the results.`);
                 }
 
             break;

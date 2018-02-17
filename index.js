@@ -234,7 +234,8 @@ client.on('message', message => {
                         pollsendidexists = false;
                     }
                     else
-                    { // make it so that you can only end a poll in a guild and also make it so that it prints the results
+                    {
+                        message.delete();
                         message.channel.send(`You didn't start this poll, so you can't end it. If they've forgotten, message Larson.`); 
                     }
                 }

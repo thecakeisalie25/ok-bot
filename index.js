@@ -76,19 +76,6 @@ client.on('message', message => {
             
             break;
 
-            case "wip-id":
-        
-                if(message.author.id === admin)
-                {
-                    message.channel.send(`you are the boi`);
-                }
-                else
-                {
-                    message.channel.send(`you are NOT the boi`);
-                }
-            
-            break;
-
             case "args":
         
                 if (!args.length)
@@ -232,6 +219,8 @@ client.on('message', message => {
                         plus = "";
                         pollsendid = [];
                         pollsendidexists = false;
+
+                        client.user.setPresence('online');
                     }
                     else
                     {
@@ -253,6 +242,8 @@ client.on('message', message => {
                         pollschannel.send(`Poll: ${activepoll}`);
                         message.delete();
                         pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
+
+                        client.user.setPresence('dnd');
                     }
                     else
                     {
@@ -267,27 +258,27 @@ client.on('message', message => {
             case "pollschat":
             case "anonchat":
 
-            if (message.guild)
-            {
-                message.channel.send(`Sorry, this command is only usable via DM`); // Otherwise this command would be useless.
-                message.delete();
-                break;
-            }
-            for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
-            {
-                if (pollsendid[i][0].id == message.author.id) // If so...
+                if (message.guild)
                 {
-                    pollschannel.send(`${pollsendid[i][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
-                    pollsendidexists = true; // Make sure we don't make them a new one.
+                    message.channel.send(`Sorry, this command is only usable via DM`); // Otherwise this command would be useless.
+                    message.delete();
+                    break;
                 }
-            }
-            if (!pollsendidexists) // If not...
-            {
-                pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
-                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
-                message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
-            }
-            pollsendidexists = false; // Make sure to get that squared away.
+                for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
+                {
+                    if (pollsendid[i][0].id == message.author.id) // If so...
+                    {
+                        pollschannel.send(`${pollsendid[i][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                        pollsendidexists = true; // Make sure we don't make them a new one.
+                    }
+                }
+                if (!pollsendidexists) // If not...
+                {
+                    pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
+                    pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                    message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
+                }
+                pollsendidexists = false; // Make sure to get that squared away.
 
             break;
 

@@ -1,3 +1,4 @@
 *config*.json
 ok-bot.sublime-project
 ok-bot.sublime-workspace
+node_modules/*

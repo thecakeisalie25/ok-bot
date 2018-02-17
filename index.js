@@ -191,7 +191,7 @@ client.on('message', message => {
                     if (message.author.id == pollstarter.id || message.author.id == admin)
                     {
                         message.delete();
-                        message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
+                        if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
 
                         for(var i = 0; i < votes.length; i++)
                         {

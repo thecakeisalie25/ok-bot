@@ -220,7 +220,7 @@ client.on('message', message => {
                         pollsendid = [];
                         pollsendidexists = false;
 
-                        client.user.setPresence('online');
+                        client.user.setPresence({status:'online'});
                     }
                     else
                     {
@@ -243,7 +243,7 @@ client.on('message', message => {
                         message.delete();
                         pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
 
-                        client.user.setPresence('dnd');
+                        client.user.setPresence({status:'dnd'});
                     }
                     else
                     {

@@ -240,11 +240,11 @@ client.on('message', message => {
                 {
                     // if(message.channel.id == pollschannel.id) // Uncomment these lines to restrict making polls to the polls chat, for whatever reason.
                     // {
-                    activepoll = message.content.slice(prefix.length + 5);
+                    activepoll = message.content.slice(prefix.length + command.length + 1);
                     pollstarter = message.author;
-                    message.channel.send(`Poll: ${activepoll}`);
+                    pollschannel.send(`Poll: ${activepoll}`);
                     message.delete();
-                    message.channel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
+                    pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
                     // }
                     // else
                     // {
@@ -268,14 +268,14 @@ client.on('message', message => {
             {
                 if (pollsendid[i][0].id == message.author.id) // If so...
                 {
-                    pollschannel.send(`${pollsendid[i][1]}: ${args.toString()}`) // Send the message with the pre-existing pollsendid.
+                    pollschannel.send(`${pollsendid[i][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
                     pollsendidexists = true; // Make sure we don't make them a new one.
                 }
             }
             if (!pollsendidexists) // If not...
             {
                 pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
-                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${args.toString()}`) // Send the message they were trying to send originally.
+                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
                 message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
             }
             pollsendidexists = false; // Make sure to get that squared away.

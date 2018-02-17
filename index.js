@@ -18,7 +18,7 @@ client.on('ready', () =>
     {
     console.log('---Alright, we\'re up and running!---');
     client.user.setActivity(`for commands`, {type:'WATCHING'});
-    pollschannel = client.channels.get('392098161054711808');
+    pollschannel = client.channels.get('351469894161924096');
     // console.log(pollschannel);
     });
 
@@ -54,8 +54,9 @@ client.on('message', message => {
                 if (message.author.id === admin)
                 { 
                     message.channel.send(`k lol bye`);
+                    client.user.setActivity(`myself die`, {type:'WATCHING'});
                     client.destroy();
-                    process.kill();
+                    // process.kill();
                 }
                 else {message.channel.send(`fuck off`);}
             
@@ -236,20 +237,26 @@ client.on('message', message => {
                         message.channel.send(`You didn't start this poll, so you can't end it. If they've forgotten, message Larson.`); 
                     }
                 }
+                else if (args[0] == "help" && args.length == 1)
+                {
+                    message.delete();
+                    message.channel.send(`Usage: ${prefix}${command} <Question> || ${prefix}${command} end`);
+                }
                 else
                 {
-                    // if(message.channel.id == pollschannel.id) // Uncomment these lines to restrict making polls to the polls chat, for whatever reason.
-                    // {
-                    activepoll = message.content.slice(prefix.length + command.length + 1);
-                    pollstarter = message.author;
-                    pollschannel.send(`Poll: ${activepoll}`);
-                    message.delete();
-                    pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
-                    // }
-                    // else
-                    // {
-                        // message.channel.send(`Sorry, you must start polls in the polls chat.`);
-                    // }
+                    if(!activepoll)
+                    {
+                        activepoll = message.content.slice(prefix.length + command.length + 1);
+                        pollstarter = message.author;
+                        pollschannel.send(`Poll: ${activepoll}`);
+                        message.delete();
+                        pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
+                    }
+                    else
+                    {
+                        message.channel.send(`Sorry, there is an active poll currently.`);
+                        message.channel.send(activepoll);
+                    }
                 }
 
             break;

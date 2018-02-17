@@ -24,7 +24,7 @@ client.on('ready', () =>
 
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
-    console.log(message.content);
+    console.log(`${message.author.username}: ${message.content}`);
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift()/*.toLowercase()*/;
 
@@ -238,18 +238,18 @@ client.on('message', message => {
                 }
                 else
                 {
-                    if(message.channel.id == pollschannel.id)
-                    {
-                        activepoll = message.content.slice(prefix.length + 5);
-                        pollstarter = message.author;
-                        message.channel.send(`Poll: ${activepoll}`);
-                        message.delete();
-                        message.channel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
-                    }
-                    else
-                    {
-                        message.channel.send(`Sorry, you must start polls in the polls chat.`);
-                    }
+                    // if(message.channel.id == pollschannel.id) // Uncomment these lines to restrict making polls to the polls chat, for whatever reason.
+                    // {
+                    activepoll = message.content.slice(prefix.length + 5);
+                    pollstarter = message.author;
+                    message.channel.send(`Poll: ${activepoll}`);
+                    message.delete();
+                    message.channel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
+                    // }
+                    // else
+                    // {
+                        // message.channel.send(`Sorry, you must start polls in the polls chat.`);
+                    // }
                 }
 
             break;
@@ -260,7 +260,7 @@ client.on('message', message => {
 
             if (message.guild)
             {
-                message.channel.send(`Sorry, this command is only usable via DM`);
+                message.channel.send(`Sorry, this command is only usable via DM`); // Otherwise this command would be useless.
                 message.delete();
                 break;
             }
@@ -274,31 +274,31 @@ client.on('message', message => {
             }
             if (!pollsendidexists) // If not...
             {
-                pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated pollsendid for them.
-                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${args.toString()}`) // Send the message they were trying to send in the first place.
+                pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
+                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${args.toString()}`) // Send the message they were trying to send originally.
                 message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
             }
             pollsendidexists = false; // Make sure to get that squared away.
 
             break;
 
-            case "eval":
+            case "eval": // Evaluate arbitrary code. This can't be a bad idea, right?
 
-                if(message.author.id == admin)
+                if(message.author.id == admin) // Perms check.
                 {
-                    eval(args.toString());
+                    eval(args.toString()); // Do what I ask.
                 }
                 else
                 {
-                    message.channel.send("nope, next time try being larson.");
+                    message.channel.send("nope, next time try being larson."); // Or don't, if you can't.
                 }
 
             break;
 
-            case "ok":
+            case "ok": // ok
 
-                message.delete();
-                message.channel.send("ok.");
+                message.delete(); // no ok
+                message.channel.send("ok."); // ok
 
             break;
 }})

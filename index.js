@@ -7,9 +7,11 @@ var     activepoll = false;
 var     pollstarter;
 var     votes = [];
 var     userhasvoted = false;
-var     votetotal;
 var     yvotes = 0;
 var     nvotes = 0;
+var     plus = "";
+var     pollsendid = [];
+var     pollsendidexists = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -50,9 +52,10 @@ client.on('message', message => {
             case "kill":
 
                 if (message.author.id === admin)
-                { // @thecakeisalie25#0517 at current time of writing
+                { 
                     message.channel.send(`k lol bye`);
-                    return client.destroy();
+                    client.destroy();
+                    process.kill();
                 }
                 else {message.channel.send(`fuck off`);}
             
@@ -132,9 +135,9 @@ client.on('message', message => {
 
                 if (message.guild)
                 {
-                    message.reply(`Public voting is disallowed, please DM the bot instead.`);
+                    message.channel.send(`Public voting is disallowed, please DM the bot instead.`);
                     message.delete();
-                    message.author.send(`Vote here with ${prefix}vote <y or n>`);
+                    message.author.send(`Vote here with \`${prefix}vote\` <y or n>`);
                 }
                 else if (!activepoll)
                 {
@@ -142,33 +145,34 @@ client.on('message', message => {
                 }
                 else if (!args.length)
                 {
-                    message.reply(`You can vote on the active poll using ${prefix}vote <y or n>\nFor reference, the active poll: ${activepoll}`);
+                    message.reply(`You can vote on the active poll using \`${prefix}vote\` <y or n>\nFor reference, the active poll: ${activepoll}`);
                 }
                 else if (args[0] !== "y" && args[0] !== "n")
                 {
-                    message.reply(`I'm not the smartest bot, please use y or n only.`)
+                    message.reply(`I'm not the smartest bot, please use y or n only.`);
                 }
-                else if (args[0]  == "y" || args[0]  == "n") // TODO Actually track votes
+                else if (args[0]  == "y" || args[0]  == "n")
                 {
                     for(var i = 0; i < votes.length; i++)
                     {
                         if(votes[i][0].id == message.author.id)
                         {
                             message.channel.send(`Sorry, you've voted on this poll before.`);
-                            userhasvoted = true
+                            userhasvoted = true;
                         }
                     }
                     if(!userhasvoted)
                     {
                         votes.push([message.author, args[0]]);
-                        message.reply(`Your vote has been counted.`)
+                        message.reply(`Your vote has been counted.`);
                     }
-                    
+                    userhasvoted = false;                    
                 }
 
             break;
 
-            case "poll": // ok.poll | ok.poll [Is the earth flat?] | ok.poll stop
+            case "poll": // ok.poll | ok.poll [Is the earth flat?] | ok.poll end
+            case "polls":
 
                 if (!args.length)
                 {
@@ -178,37 +182,54 @@ client.on('message', message => {
                     }
                     else if (!activepoll)
                     {
-                        message.channel.send(`There is no active poll. You can start one by writing a question after ${prefix}poll.`);
+                        message.channel.send(`There is no active poll. You can start one by writing a question after \`${prefix}poll\`.`);
                     }
                 }
                 else if (args[0] == "end")
                 {
                     if (message.author.id == pollstarter.id || message.author.id == admin)
                     {
-                        activepoll = false;
-                        pollstarter = null;
-                        message.channel.send(`Alright, poll unset.`);
+                        message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
 
                         for(var i = 0; i < votes.length; i++)
                         {
                             if(votes[i][1] == "y")
                             {
-                                votetotal++;
                                 yvotes++;
                             }
                             else if(votes[i][1] == "n")
                             {
-                                votetotal--;
                                 nvotes++;
                             }
                             else
                             {
                                 pollschannel.send("There was an error recounting votes. Vote counting will continue, but may not be accurate.");
+                                pollschannel.send(`This error occurs when a vote is recorded as neither y nor n.`);
                             }
                         }
 
-                        pollschannel.send(`Voting results: ${votetotal}\nVotes are calculated as (y - n)\nVotes for yes: ${yvotes}\nVotes for no: ${nvotes}`);
+                        if( yvotes - nvotes > 0 )
+                        {
+                            plus = "+";
+                        }
+                        else
+                        {
+                            plus = "";
+                        }
+                        pollschannel.send(`${activepoll}`);
+                        pollschannel.send(`Voting results: ${plus}${yvotes - nvotes}`);
+                        pollschannel.send(`Votes for yes: ${yvotes}`);
+                        pollschannel.send(`Votes for no: ${nvotes}`);
 
+                        activepoll = false;
+                        pollstarter;
+                        votes = [];
+                        userhasvoted = false;
+                        yvotes = 0;
+                        nvotes = 0;
+                        plus = "";
+                        pollsendid = [];
+                        pollsendidexists = false;
                     }
                     else
                     { // make it so that you can only end a poll in a guild and also make it so that it prints the results
@@ -217,10 +238,67 @@ client.on('message', message => {
                 }
                 else
                 {
-                    activepoll = message.content.slice(prefix.length + 5);
-                    pollstarter = message.author;
-                    message.channel.send(`Alright, poll set. Do ${prefix}end to close the voting and display the results.`);
+                    if(message.channel.id == pollschannel.id)
+                    {
+                        activepoll = message.content.slice(prefix.length + 5);
+                        pollstarter = message.author;
+                        message.channel.send(`Poll: ${activepoll}`);
+                        message.delete();
+                        message.channel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
+                    }
+                    else
+                    {
+                        message.channel.send(`Sorry, you must start polls in the polls chat.`);
+                    }
                 }
+
+            break;
+
+            case "pollsend":
+            case "pollschat":
+            case "anonchat":
+
+            if (message.guild)
+            {
+                message.channel.send(`Sorry, this command is only usable via DM`);
+                message.delete();
+                break;
+            }
+            for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
+            {
+                if (pollsendid[i][0].id == message.author.id) // If so...
+                {
+                    pollschannel.send(`${pollsendid[i][1]}: ${args.toString()}`) // Send the message with the pre-existing pollsendid.
+                    pollsendidexists = true; // Make sure we don't make them a new one.
+                }
+            }
+            if (!pollsendidexists) // If not...
+            {
+                pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated pollsendid for them.
+                pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${args.toString()}`) // Send the message they were trying to send in the first place.
+                message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
+            }
+            pollsendidexists = false; // Make sure to get that squared away.
+
+            break;
+
+            case "eval":
+
+                if(message.author.id == admin)
+                {
+                    eval(args.toString());
+                }
+                else
+                {
+                    message.channel.send("nope, next time try being larson.");
+                }
+
+            break;
+
+            case "ok":
+
+                message.delete();
+                message.channel.send("ok.");
 
             break;
 }})

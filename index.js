@@ -230,7 +230,6 @@ client.on('message', message => {
                 }
                 else if (args[0] == "help" && args.length == 1)
                 {
-                    message.delete();
                     message.channel.send(`Usage: ${prefix}${command} <Question> || ${prefix}${command} end`);
                 }
                 else

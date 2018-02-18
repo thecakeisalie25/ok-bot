@@ -19,7 +19,6 @@ client.on('ready', () =>
     console.log('---Alright, we\'re up and running!---');
     client.user.setActivity(`for commands`, {type:'WATCHING'});
     pollschannel = client.channels.get('351469894161924096');
-    // console.log(pollschannel);
     });
 
 client.on('message', message => {
@@ -30,7 +29,6 @@ client.on('message', message => {
 
     switch (command)
     {
-            // console.log(message.content);
             case "status":
 
                 message.channel.send(`i'm doin ok.`);
@@ -40,12 +38,6 @@ client.on('message', message => {
             case "members":
 
                 message.channel.send(`${message.guild.name} has (${message.guild.memberCount}) members`);
-            
-            break;
-
-            case "whoami":
-
-                message.channel.send(`You are ${message.author.username}\nAnd your ID is ${message.author.id}`);
             
             break;
 
@@ -124,7 +116,7 @@ client.on('message', message => {
                 if (message.guild)
                 {
                     message.channel.send(`Public voting is disallowed, please DM the bot instead.`);
-                    message.delete();
+                    message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                     message.author.send(`Vote here with \`${prefix}vote\` <y or n>`);
                 }
                 else if (!activepoll)
@@ -177,7 +169,7 @@ client.on('message', message => {
                 {
                     if (message.author.id == pollstarter.id || message.author.id == admin)
                     {
-                        message.delete();
+                        message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                         if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
 
                         for(var i = 0; i < votes.length; i++)
@@ -224,13 +216,17 @@ client.on('message', message => {
                     }
                     else
                     {
-                        message.delete();
+                        message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                         message.channel.send(`You didn't start this poll, so you can't end it. If they've forgotten, message Larson.`); 
                     }
                 }
                 else if (args[0] == "help" && args.length == 1)
                 {
                     message.channel.send(`Usage: ${prefix}${command} <Question> || ${prefix}${command} end`);
+                }
+                else if (args[0] == "count")
+                {
+                    message.channel.send
                 }
                 else
                 {
@@ -239,10 +235,13 @@ client.on('message', message => {
                         activepoll = message.content.slice(prefix.length + command.length + 1);
                         pollstarter = message.author;
                         pollschannel.send(`Poll: ${activepoll}`);
-                        message.delete();
+                        message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                         pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
 
                         client.user.setPresence({status:'dnd'});
+                        
+                        pollsendid = [];
+                        pollsendidexists = false;
                     }
                     else
                     {
@@ -255,12 +254,13 @@ client.on('message', message => {
 
             case "pollsend":
             case "pollschat":
+            case "anonsend":
             case "anonchat":
 
                 if (message.guild)
                 {
                     message.channel.send(`Sorry, this command is only usable via DM`); // Otherwise this command would be useless.
-                    message.delete();
+                    message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                     break;
                 }
                 for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
@@ -296,7 +296,7 @@ client.on('message', message => {
 
             case "ok": // ok
 
-                message.delete(); // no ok
+                message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`)); // no ok
                 message.channel.send("ok."); // ok
 
             break;

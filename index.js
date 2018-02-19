@@ -277,7 +277,7 @@ client.on('message', message => {
                 if (!pollsendidexists) // If not...
                 {
                     pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
-                    pollschannel.send(`${pollsendid[pollsendid.length - 1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                    pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
                     message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
                 }
                 pollsendidexists = false; // Make sure to get that squared away.
@@ -288,7 +288,7 @@ client.on('message', message => {
 
                 if(message.author.id == admin) // Perms check.
                 {
-                    eval(args.toString()); // Do what I ask.
+                    eval(args.toString()).catch(message.channel.send); // Do what I ask.
                 }
                 else
                 {
@@ -304,11 +304,5 @@ client.on('message', message => {
 
             break;
 }})
-
-process.on('error', error => {
-
-    adminuser.send(error);
-
-})
 
 client.login(token);

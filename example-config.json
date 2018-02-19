@@ -1,0 +1,5 @@
+{
+    "prefix": "ok.", // Prefix, as in ok.status.
+    "token": "<insert token here>", // Your bot token.
+    "admin": "134509976956829697" // Your user ID. 
+}

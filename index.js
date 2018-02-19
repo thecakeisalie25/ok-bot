@@ -1,6 +1,6 @@
 const   Discord = require('discord.js');
 const   client = new Discord.Client();
-const   {prefix, token, admin} = require ('./config.json');
+const   {prefix, token, admin, pollschannelid} = require ('./config.json');
 
 var     adminuser;
 
@@ -20,8 +20,9 @@ client.on('ready', () =>
     {
     console.log('---Alright, we\'re up and running!---');
     client.user.setActivity(`for commands`, {type:'WATCHING'});
-    pollschannel = client.channels.get(pollschannelid);
-    adminuser = client.users.get(admin);
+    
+    pollschannel    = client.channels.get(pollschannelid);
+    adminuser       = client.users.get(admin);
     });
 
 client.on('message', message => {

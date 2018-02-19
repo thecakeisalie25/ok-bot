@@ -1,5 +1,6 @@
 {
     "prefix": "ok.",
     "token": "<insert token here>",
-    "admin": "134509976956829697"
+    "admin": "<admin user id>",
+    "pollschannelid": "<channel id>"
 }

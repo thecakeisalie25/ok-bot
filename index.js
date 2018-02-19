@@ -20,7 +20,7 @@ client.on('ready', () =>
     {
     console.log('---Alright, we\'re up and running!---');
     client.user.setActivity(`for commands`, {type:'WATCHING'});
-    pollschannel = client.channels.get('351469894161924096');
+    pollschannel = client.channels.get(pollschannelid);
     adminuser = client.users.get(admin);
     });
 

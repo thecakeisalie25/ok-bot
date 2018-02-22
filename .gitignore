@@ -1,5 +1,9 @@
+# No, you're not getting my token. Nice try. And I changed the one that was in the earlier commits.
 config.json
+
+# Sublime text workspace files.
 ok-bot.sublime-project
 ok-bot.sublime-workspace
+
+# Package files for node installation
 node_modules/
-package-lock.json

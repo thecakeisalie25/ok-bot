@@ -3,13 +3,13 @@ const   Discord = require('discord.js');
 const   client = new Discord.Client();
 
 var     adminuser;
-const   sequelize = new Sequelize('database', 'user', 'password', 
-{
-    host:       'localhost',
-    dialect:    'squlite',
-    logging:    'false',
-    storage:    'database.squlite',
-});
+// const   sequelize = new Sequelize('database', 'user', 'password', 
+// {
+//     host:       'localhost',
+//     dialect:    'squlite',
+//     logging:    'false',
+//     storage:    'database.squlite',
+// });
 
 //const   thots = sequelize.define('thots') 
 

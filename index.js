@@ -1,15 +1,14 @@
 const   {prefix, token, admin, pollschannelid} = require ('./config.json');
 const   Discord = require('discord.js');
+const   Sequelize = require('sequelize');
 const   client = new Discord.Client();
-
-var     adminuser;
-// const   sequelize = new Sequelize('database', 'user', 'password', 
-// {
-//     host:       'localhost',
-//     dialect:    'squlite',
-//     logging:    'false',
-//     storage:    'database.squlite',
-// });
+const   sequelize = new Sequelize('database', 'user', 'password', 
+{
+    host:       'localhost',
+    dialect:    'sqlite',
+    logging:    'false',
+    storage:    'database.sqlite',
+});
 
 //const   thots = sequelize.define('thots') 
 

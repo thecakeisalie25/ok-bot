@@ -23,18 +23,18 @@ const   thots = sequelize.define('thots', {
     megathot: Sequelize.BOOLEAN,
 }) 
 
-var     adminuser;
-var     pollschannel;
+let     adminuser;
+let     pollschannel;
 
-var     activepoll = false;
-var     pollstarter;
-var     votes = [];
-var     userhasvoted = false;
-var     yvotes = 0;
-var     nvotes = 0;
-var     plus = "";
-var     pollsendid = [];
-var     pollsendidexists = false;
+let     activepoll = false;
+let     pollstarter;
+let     votes = [];
+let     userhasvoted = false;
+let     yvotes = 0;
+let     nvotes = 0;
+let     plus = "";
+let     pollsendid = [];
+let     pollsendidexists = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -159,7 +159,7 @@ client.on('message', message => {
                 }
                 else if (args[0]  == "y" || args[0]  == "n")
                 {
-                    for(var i = 0; i < votes.length; i++)
+                    for(let i = 0; i < votes.length; i++)
                     {
                         if(votes[i][0].id == message.author.id)
                         {
@@ -198,7 +198,7 @@ client.on('message', message => {
                         message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                         if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
 
-                        for(var i = 0; i < votes.length; i++)
+                        for(let i = 0; i < votes.length; i++)
                         {
                             if(votes[i][1] == "y")
                             {
@@ -289,7 +289,7 @@ client.on('message', message => {
                     message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                     break;
                 }
-                for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
+                for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
                 {
                     if (pollsendid[i][0].id == message.author.id) // If so...
                     {

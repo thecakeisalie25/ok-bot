@@ -63,7 +63,6 @@ client.on('message', message => {
                     message.channel.send(`k lol bye`);
                     client.user.setActivity(`myself die`, {type:'WATCHING'});
                     client.destroy();
-                    // process.kill();
                 }
                 else {message.channel.send(`fuck off`);}
             
@@ -300,7 +299,7 @@ client.on('message', message => {
 
                 if(message.author.id == admin) // Perms check.
                 {
-                    eval(args.toString()).catch(message.channel.send); // Do what I ask.
+                    eval(args.toString() || message.channel.send('no')).catch(message.channel.send); // Do what I ask.
                 }
                 else
                 {

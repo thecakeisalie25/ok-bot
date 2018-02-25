@@ -44,6 +44,8 @@ client.on('ready', () =>
     
     pollschannel    = client.channels.get(pollschannelid);
     adminuser       = client.users.get(admin);
+
+    thots.sync();
     });
 
 client.on('message', message => {

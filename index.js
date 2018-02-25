@@ -46,7 +46,7 @@ client.on('message', async message => {
     console.log(`${message.author.username}: ${message.content}`);
     const args =    message.content.slice(prefix.length).split(/ +/);
     const command = args.shift();
-    const 
+    //const 
 
     switch (command)
     {
@@ -129,6 +129,30 @@ client.on('message', async message => {
                     message.channel.send(`${thotmention} is a thot. thot patrol is now tracking.`);
                 }
                             
+            break;
+
+            case "notathot":
+                if (message.author.id !== adminuser.id)
+                {
+                    message.channel.send(`you must be a registered member of the thot patrol.`);
+                }
+                else if (message.mentions.users.size !== 1)
+                {
+                    message.channel.send(`nope, try again.`);
+                }
+                else
+                {
+                    const thot = await thots.findOne({where: {userid: message.mentions.users.first().id}});
+                    if(thot)
+                    {
+                        console.log('thot');
+                    }
+                    else
+                    {
+                        console.log('thot');
+                    }
+                }
+
             break;
 
             case "avatar":

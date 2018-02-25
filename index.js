@@ -11,16 +11,9 @@ const   sequelize = new Sequelize('database', 'user', 'password',
 });
 
 const   thots = sequelize.define('thots', {
-    userid: 
-    {
-        type: Sequelize.STRING,
-        validate:
-        {
-            is: ["0-9"],
-        }
-    },
-    count: Sequelize.INTEGER,
-    megathot: Sequelize.BOOLEAN,
+    userid:     Sequelize.STRING ,
+    count:      Sequelize.INTEGER,
+    megathot:   Sequelize.BOOLEAN,
 }) 
 
 let     adminuser;
@@ -45,14 +38,15 @@ client.on('ready', () =>
     pollschannel    = client.channels.get(pollschannelid);
     adminuser       = client.users.get(admin);
 
-    thots.sync();
+    thots.sync({force: true});
     });
 
-client.on('message', message => {
+client.on('message', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     console.log(`${message.author.username}: ${message.content}`);
-    const args = message.content.slice(prefix.length).split(/ +/);
+    const args =    message.content.slice(prefix.length).split(/ +/);
     const command = args.shift();
+    const 
 
     switch (command)
     {

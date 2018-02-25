@@ -6,12 +6,12 @@ const   sequelize = new Sequelize('database', 'user', 'password',
 {
     host:       'localhost',
     dialect:    'sqlite',
-    logging:    'false',
+    logging:     false,
     storage:    'database.sqlite',
 });
 
 const   thots = sequelize.define('thots', {
-    id: 
+    userid: 
     {
         type: Sequelize.STRING,
         validate:
@@ -112,16 +112,29 @@ client.on('message', message => {
         
                 if(args[0] === '@everyone' || args[0] === '@here')
                 {
-                    return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a MEGATHOT!`);
+                    return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
                 }
-                else if(!message.mentions.users.size)
+                else if(message.mentions.users.size !== 1)
                 {
-                    return message.channel.send(`yep, nobody is a thot. good thinking. (mention a user, idiot)`);
+                    return message.channel.send(`tag a user. not two users, and not zero users. don't even think about 3 users.`);
                 }
-                const taggedUser = message.mentions.users.first();
-        
-                message.channel.send(`${taggedUser} is a thot!`);
-            
+                const thotmention = message.mentions.users.first();
+                const thot = await thots.findOne({where: {userid: thotmention.id}});
+                if(thot)
+                {
+                    thot.increment('count');
+                    message.channel.send(`${thotmention} is a thot, as determined by ${thot.get('count')} people so far.`);
+                }
+                else
+                {
+                    thots.create({
+                        userid: thotmention.id,
+                        count: 1,
+                        megathot: false,
+                    })
+                    message.channel.send(`${thotmention} is a thot. thot patrol is now tracking.`);
+                }
+                            
             break;
 
             case "avatar":

@@ -10,7 +10,18 @@ const   sequelize = new Sequelize('database', 'user', 'password',
     storage:    'database.sqlite',
 });
 
-//const   thots = sequelize.define('thots') 
+const   thots = sequelize.define('thots', {
+    id: 
+    {
+        type: Sequelize.STRING,
+        validate:
+        {
+            is: ["0-9"],
+        }
+    },
+    count: Sequelize.INTEGER,
+    megathot: Sequelize.BOOLEAN,
+}) 
 
 var     adminuser;
 var     pollschannel;

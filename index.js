@@ -44,9 +44,9 @@ client.on('ready', () =>
 client.on('message', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     console.log(`${message.author.username}: ${message.content}`);
-    const args =    message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift();
-    //const 
+    const args      = message.content.slice(prefix.length).split(/ +/);
+    const command   = args.shift();
+    const argslist  = args.join(` `);
 
     switch (command)
     {
@@ -303,7 +303,7 @@ client.on('message', async message => {
                 {
                     if(!activepoll)
                     {
-                        activepoll = message.content.slice(prefix.length + command.length + 1);
+                        activepoll = argslist;
                         pollstarter = message.author;
                         pollschannel.send(`Poll: ${activepoll}`);
                         message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
@@ -338,14 +338,14 @@ client.on('message', async message => {
                 {
                     if (pollsendid[i][0].id == message.author.id) // If so...
                     {
-                        pollschannel.send(`${pollsendid[i][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                        pollschannel.send(`${pollsendid[i][1]}: ${argslist}`) // Send the message.
                         pollsendidexists = true; // Make sure we don't make them a new one.
                     }
                 }
                 if (!pollsendidexists) // If not...
                 {
                     pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
-                    pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                    pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${argslist}`) // Send the message.
                     message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
                 }
                 pollsendidexists = false; // Make sure to get that squared away.
@@ -374,8 +374,5 @@ client.on('message', async message => {
 }})
 
 client.login(token);
-/*
-const testarray = [`yes`, `delete`, `this`, `user`]
 
-if(testarray[0].startsWith(`y`)){console.log(`yes it does the thing`)}
-*/
+// when it's ok-bot time

@@ -38,7 +38,7 @@ client.on('ready', () =>
     pollschannel    = client.channels.get(pollschannelid);
     adminuser       = client.users.get(admin);
 
-    thots.sync({force: true});
+    thots.sync();
     });
 
 client.on('message', async message => {
@@ -142,15 +142,29 @@ client.on('message', async message => {
                 }
                 else
                 {
-                    const thot = await thots.findOne({where: {userid: message.mentions.users.first().id}});
-                    if(thot)
+                    message.channel.send(`are you sure you want us to throw away this dood's records?`).then(() =>
                     {
-                        console.log('thot');
-                    }
-                    else
-                    {
-                        console.log('thot');
-                    }
+                        const filter = m => message.author.id == m.author.id;
+
+                        message.channel.awaitMessages(filter, {time:10000, maxMatches: 1, errors: ['time']})
+                            .then(messages =>
+                                {
+                                    if (messages.first().content.startsWith(`y`))
+                                    {
+                                        thots.destroy({where: {userid: message.mentions.users.first().id}});
+                                        message.channel.send(`alright, reset.`)
+                                    }
+                                    else
+                                    {
+                                        message.channel.send(`alright, cancelled.`);
+                                    }
+                                })
+                            .catch((error) => 
+                                {
+                                    message.channel.send(`error: you took too long, idiot.`);
+                                    console.log(error);
+                                });
+                    });
                 }
 
             break;
@@ -360,3 +374,8 @@ client.on('message', async message => {
 }})
 
 client.login(token);
+/*
+const testarray = [`yes`, `delete`, `this`, `user`]
+
+if(testarray[0].startsWith(`y`)){console.log(`yes it does the thing`)}
+*/

@@ -169,6 +169,16 @@ client.on('message', async message => {
 
             break;
 
+            case "thotleaderboard":
+            case "listthots":
+            case "listhots":
+            case "lsthots":
+
+                const thotlist      = await thots.findAll({attributes: [`userid`, `count`]});
+                console.log(thotlist);
+
+            break;
+
             case "avatar":
         
                 if (!message.mentions.users.size) 

@@ -371,6 +371,26 @@ client.on('message', async message => {
                 message.channel.send("ok."); // ok
 
             break;
+
+            case "coin": // Flip a coin.
+            case "flipacoin":
+            case "coinflip":
+
+                const coin = Math.floor(Math.random() * 2);
+                if (coin == 1)
+                {
+                    message.channel.send(`it's heads`);
+                }
+                else if (coin == 0) 
+                {
+                    message.channel.send(`it's tails`);
+                }
+                else
+                {
+                    message.channel.send(`uh what`);
+                }
+
+            break;
 }})
 
 client.login(token);

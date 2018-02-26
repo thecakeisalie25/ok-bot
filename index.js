@@ -356,7 +356,7 @@ client.on('message', async message => {
 
                 if(message.author.id == admin) // Perms check.
                 {
-                    eval(args.toString() || message.channel.send('no')).catch(message.channel.send); // Do what I ask.
+                    eval(argslist || message.channel.send('no')).catch(message.channel.send); // Do what I ask.
                 }
                 else
                 {
@@ -367,7 +367,7 @@ client.on('message', async message => {
 
             case "ok": // ok
 
-                message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`)); // no ok
+                message.delete(); // no ok
                 message.channel.send("ok."); // ok
 
             break;

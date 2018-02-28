@@ -40,8 +40,8 @@ client.on('ready', () =>
 
     thots.sync();
     });
-
-client.on('message', async message => {
+// The space has been replaced with a comment because this crappy cloud based IDE doesn't know ES6 and calls an error if it's not one word. The comment acts as a space, but "works" enough for the editor.
+client.on('message', async/**/message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     console.log(`${message.author.username}: ${message.content}`);
     const args      = message.content.slice(prefix.length).split(/ +/);
@@ -173,9 +173,24 @@ client.on('message', async message => {
             case "listthots":
             case "listhots":
             case "lsthots":
+            case "thotlist":
 
-                const thotlist      = await thots.findAll({attributes: [`userid`, `count`]});
+                const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
+                const firstthot = client.users.get(thotlist[0].userid);
+                console.log(`------------------------ thotlist below`);
                 console.log(thotlist);
+                console.log(`------------------------ thotlist [0] below`);
+                console.log(thotlist[0]);
+                console.log(`------------------------ thotlist [0].userid below`);
+                console.log(thotlist[0].userid);
+                console.log(`------------------------ firstthot.username below`);
+                console.log(firstthot.username);
+                console.log(`------------------------`);
+                thotlist.forEach(function(element, index, array)
+                {
+                    const thotuser = client.users.get(element.userid);
+                    console.log(`${index+1}. ${thotuser.username}: ${element.count}`)
+                })
 
             break;
 

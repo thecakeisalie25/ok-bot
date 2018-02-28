@@ -1,7 +1,8 @@
-const   {prefix, token, admin, pollschannelid} = require ('./config.json');
-const   Discord = require('discord.js');
-const   Sequelize = require('sequelize');
-const   client = new Discord.Client();
+const  {prefix, token, admin, pollschannelid} = require ('./config.json');
+const   Discord     = require('discord.js');
+const   Sequelize   = require('sequelize');
+const   client      = new Discord.Client();
+
 const   sequelize = new Sequelize('database', 'user', 'password', 
 {
     host:       'localhost',
@@ -19,15 +20,17 @@ const   thots = sequelize.define('thots', {
 let     adminuser;
 let     pollschannel;
 
-let     activepoll = false;
+let     activepoll      = false;
 let     pollstarter;
-let     votes = [];
-let     userhasvoted = false;
-let     yvotes = 0;
-let     nvotes = 0;
-let     plus = "";
-let     pollsendid = [];
-let     pollsendidexists = false;
+let     votes           = [];
+let     userhasvoted    = false;
+let     yvotes          = 0;
+let     nvotes          = 0;
+let     plus            = "";
+let     pollsendid      = [];
+let     pollidexists    = false;
+
+const   adminonly       = false
 
 // When ON log to console.
 client.on('ready', () => 
@@ -43,6 +46,7 @@ client.on('ready', () =>
 // The space has been replaced with a comment because this crappy cloud based IDE doesn't know ES6 and calls an error if it's not one word. The comment acts as a space, but "works" enough for the editor.
 client.on('message', async/**/message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (adminonly && (message.author.id !== adminuser.id)) return;
     console.log(`${message.author.username}: ${message.content}`);
     const args      = message.content.slice(prefix.length).split(/ +/);
     const command   = args.shift();
@@ -306,7 +310,7 @@ client.on('message', async/**/message => {
                         nvotes = 0;
                         plus = "";
                         pollsendid = [];
-                        pollsendidexists = false;
+                        pollidexists = false;
 
                         client.user.setPresence({status:'online'});
                     }
@@ -337,7 +341,7 @@ client.on('message', async/**/message => {
                         client.user.setPresence({status:'dnd'});
                         
                         pollsendid = [];
-                        pollsendidexists = false;
+                        pollidexists = false;
                     }
                     else
                     {
@@ -364,16 +368,16 @@ client.on('message', async/**/message => {
                     if (pollsendid[i][0].id == message.author.id) // If so...
                     {
                         pollschannel.send(`${pollsendid[i][1]}: ${argslist}`) // Send the message.
-                        pollsendidexists = true; // Make sure we don't make them a new one.
+                        pollidexists = true; // Make sure we don't make them a new one.
                     }
                 }
-                if (!pollsendidexists) // If not...
+                if (!pollidexists) // If not...
                 {
                     pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
                     pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${argslist}`) // Send the message.
                     message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
                 }
-                pollsendidexists = false; // Make sure to get that squared away.
+                pollidexists = false; // Make sure to get that squared away.
 
             break;
 

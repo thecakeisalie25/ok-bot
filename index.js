@@ -1,4 +1,4 @@
-const  {prefix, token, admin, pollschannelid} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, generalchannelid} = require ('./config.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');
 const   client      = new Discord.Client();
@@ -39,12 +39,20 @@ client.on('ready', () =>
     client.user.setActivity(`for commands`, {type:'WATCHING'});
     
     pollschannel    = client.channels.get(pollschannelid);
+    generalchannel  = client.channels.get(generalchannelid);
     adminuser       = client.users.get(admin);
+
+    if (process.argv[2] == "wednesday")
+    {
+        process.exitCode = 0;
+        generalchannel.send(`it is wednesday, my dudes.`)
+        client.destroy();
+    }
 
     thots.sync();
     });
-// The space has been replaced with a comment because this crappy cloud based IDE doesn't know ES6 and calls an error if it's not one word. The comment acts as a space, but "works" enough for the editor.
-client.on('message', async/**/message => {
+
+client.on('message', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     if (adminonly && (message.author.id !== adminuser.id)) return;
     console.log(`${message.author.username}: ${message.content}`);
@@ -181,15 +189,6 @@ client.on('message', async/**/message => {
 
                 const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
                 const firstthot = client.users.get(thotlist[0].userid);
-                console.log(`------------------------ thotlist below`);
-                console.log(thotlist);
-                console.log(`------------------------ thotlist [0] below`);
-                console.log(thotlist[0]);
-                console.log(`------------------------ thotlist [0].userid below`);
-                console.log(thotlist[0].userid);
-                console.log(`------------------------ firstthot.username below`);
-                console.log(firstthot.username);
-                console.log(`------------------------`);
                 thotlist.forEach(function(element, index, array)
                 {
                     const thotuser = client.users.get(element.userid);

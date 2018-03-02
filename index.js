@@ -1,7 +1,6 @@
 const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');
-const   querystring = require('querystring');
 const   client      = new Discord.Client();
 
 const   sequelize = new Sequelize('database', 'user', 'password', 
@@ -12,16 +11,25 @@ const   sequelize = new Sequelize('database', 'user', 'password',
     storage:    'database.sqlite',
 });
 
-const   thots = sequelize.define('thots', {
-    userid:     Sequelize.STRING ,
-    count:      Sequelize.INTEGER,
-    megathot:   Sequelize.BOOLEAN,
+const   thots       = sequelize.define('thots', {
+    userid:           Sequelize.STRING ,
+    count:            Sequelize.INTEGER,
+    megathot:         Sequelize.BOOLEAN,
 });
 
-const   rants = sequelize.define('rants', {
-    creatorid:  Sequelize.STRING ,
-    rantid:     Sequelize.INTEGER,
-    active:     Sequelize.BOOLEAN,
+const   rants       = sequelize.define('rants', {
+    creatorid:        Sequelize.STRING ,
+    rantid:           {type: Sequelize.STRING, unique: true, primaryKey: true},
+    channelid:        Sequelize.STRING ,
+    active:           Sequelize.BOOLEAN,
+    type:             Sequelize.STRING ,
+    originalmessage:  Sequelize.TEXT   ,
+})
+
+const   rantms      = sequelize.define('rantms', {
+    userid:           Sequelize.STRING ,
+    rantid:           Sequelize.INTEGER,
+    content:          Sequelize.TEXT   ,
 })
 
 let     adminuser;

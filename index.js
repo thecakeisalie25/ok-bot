@@ -16,7 +16,13 @@ const   thots = sequelize.define('thots', {
     userid:     Sequelize.STRING ,
     count:      Sequelize.INTEGER,
     megathot:   Sequelize.BOOLEAN,
-}) 
+});
+
+const   rants = sequelize.define('rants', {
+    creatorid:  Sequelize.STRING ,
+    rantid:     Sequelize.INTEGER,
+    active:     Sequelize.BOOLEAN,
+})
 
 let     adminuser;
 let     pollschannel;
@@ -206,7 +212,8 @@ client.on('message', async message => {
                 thotlist.forEach(function(element, index, array)
                 {
                     const thotuser = client.users.get(element.userid);
-                    message.channel.send(`${index+1}. ${thotuser.username}: ${element.count}`)
+                    const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
+                    message.channel.send(thottext)
                 })
                 if(!thotlist.length) message.channel.send("http://i1.kym-cdn.com/photos/images/newsfeed/000/770/675/627.png")
 

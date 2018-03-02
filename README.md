@@ -11,4 +11,4 @@ Just a bot. May become public at one point. but you're free to use the source as
 There will likely be bugs, as this was hastily thrown together and my first project!  
 This will update frequently, as I add more crap / fix bugs that people just keep discovering.  
 I hope you enjoy this project, because i certainly did creating it.  
-***!*** 
+***!***

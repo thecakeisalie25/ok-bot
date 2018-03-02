@@ -5,5 +5,5 @@ config.json
 ok-bot.sublime-project
 ok-bot.sublime-workspace
 
-# Package files for node installation
 node_modules/
+ok-bot.code-workspace

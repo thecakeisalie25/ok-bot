@@ -1,19 +1,44 @@
-const   Discord = require('discord.js');
-const   client = new Discord.Client();
-const   {prefix, token, admin, pollschannelid} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
+const   Discord     = require('discord.js');
+const   Sequelize   = require('sequelize');
+const   querystring = require('querystring');
+const   client      = new Discord.Client();
 
-var     adminuser;
+const   sequelize = new Sequelize('database', 'user', 'password', 
+{
+    host:       'localhost',
+    dialect:    'sqlite',
+    logging:     false,
+    storage:    'database.sqlite',
+});
 
-var     pollschannel;
-var     activepoll = false;
-var     pollstarter;
-var     votes = [];
-var     userhasvoted = false;
-var     yvotes = 0;
-var     nvotes = 0;
-var     plus = "";
-var     pollsendid = [];
-var     pollsendidexists = false;
+const   thots = sequelize.define('thots', {
+    userid:     Sequelize.STRING ,
+    count:      Sequelize.INTEGER,
+    megathot:   Sequelize.BOOLEAN,
+});
+
+const   rants = sequelize.define('rants', {
+    creatorid:  Sequelize.STRING ,
+    rantid:     Sequelize.INTEGER,
+    active:     Sequelize.BOOLEAN,
+})
+
+let     adminuser;
+let     pollschannel;
+
+let     activepoll      = false;
+let     pollstarter;
+let     votes           = [];
+let     userhasvoted    = false;
+let     yvotes          = 0;
+let     nvotes          = 0;
+let     plus            = "";
+let     pollsendid      = [];
+let     pollidexists    = false;
+
+const   adminonly       = false;
+const   wednesday       = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -22,14 +47,31 @@ client.on('ready', () =>
     client.user.setActivity(`for commands`, {type:'WATCHING'});
     
     pollschannel    = client.channels.get(pollschannelid);
+    wednesdaychat   = client.channels.get(wednesdaychannelid);
     adminuser       = client.users.get(admin);
+
+    /*if (process.argv[2] == "wednesday")
+    {
+        wednesdaychat.send(`it is wednesday, my dudes.`)
+        client.destroy();
+        process.exitCode = 0;
+    }*/
+
+    thots.sync();
     });
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+client.on('message', async message => {
+    if (message.author.bot) return;
+    if (new Date().getDay() == 3 && message.channel.id == wednesdaychat.id && message.content.toLocaleLowerCase().includes("w") && wednesday)
+    {
+        message.channel.send(`hey.\ni noticed your message had a "w" in it.\ndid you know?\nit is wednesday, my dudes.`);
+    };
+    if (!message.content.startsWith(prefix)) return;
+    if (adminonly && (message.author.id !== adminuser.id)) return;
     console.log(`${message.author.username}: ${message.content}`);
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift();
+    const args      = message.content.slice(prefix.length).split(/ +/);
+    const command   = args.shift();
+    const argslist  = args.join(` `);
 
     switch (command)
     {
@@ -52,7 +94,6 @@ client.on('message', message => {
                     message.channel.send(`k lol bye`);
                     client.user.setActivity(`myself die`, {type:'WATCHING'});
                     client.destroy();
-                    // process.kill();
                 }
                 else {message.channel.send(`fuck off`);}
             
@@ -87,19 +128,127 @@ client.on('message', message => {
             break;
 
             case "isthot":
+            case "thot":
         
                 if(args[0] === '@everyone' || args[0] === '@here')
                 {
-                    return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a MEGATHOT!`);
+                    thots.update({megathot:true}, {where: {userid: message.author.id}});
+                    return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
                 }
-                else if(!message.mentions.users.size)
+                else if(message.mentions.users.size !== 1)
                 {
-                    return message.channel.send(`yep, nobody is a thot. good thinking. (mention a user, idiot)`);
+                    return message.channel.send(`tag a user. not two users, and not zero users. don't even think about 3 users.`);
                 }
-                const taggedUser = message.mentions.users.first();
-        
-                message.channel.send(`${taggedUser} is a thot!`);
-            
+                const thotmention = message.mentions.users.first();
+                const thot = await thots.findOne({where: {userid: thotmention.id}});
+                if(thot)
+                {
+                    thot.increment('count');
+                    message.channel.send(`${thotmention} is a thot, as determined by ${thot.get('count')} people so far.`);
+                }
+                else
+                {
+                    thots.create({
+                        userid: thotmention.id,
+                        count: 1,
+                        megathot: false,
+                    })
+                    message.channel.send(`${thotmention} is a thot. thot patrol is now tracking.`);
+                }
+                            
+            break;
+
+            case "notathot":
+            case "destroythot":
+
+                if (message.author.id !== adminuser.id)
+                {
+                    message.channel.send(`you must be a registered member of the thot patrol.`);
+                }
+                else if (message.mentions.users.size !== 1)
+                {
+                    message.channel.send(`nope, try again.`);
+                }
+                else
+                {
+                    message.channel.send(`are you sure you want us to throw away this dood's records?`).then(() =>
+                    {
+                        const filter = m => message.author.id == m.author.id;
+
+                        message.channel.awaitMessages(filter, {time:10000, maxMatches: 1, errors: ['time']})
+                            .then(messages =>
+                                {
+                                    if (messages.first().content.startsWith(`y`))
+                                    {
+                                        thots.destroy({where: {userid: message.mentions.users.first().id}});
+                                        message.channel.send(`alright, reset.`)
+                                    }
+                                    else
+                                    {
+                                        message.channel.send(`alright, cancelled.`);
+                                    }
+                                })
+                            .catch((error) => 
+                                {
+                                    message.channel.send(`error: you took too long, idiot.`);
+                                    console.log(error);
+                                });
+                    });
+                }
+
+            break;
+
+            case "thotleaderboard":
+            case "listthots":
+            case "listhots":
+            case "lsthots":
+            case "thotlist":
+
+                const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
+                thotlist.sort(function (a,b)
+                    {
+                        return b.count - a.count;
+                    });
+                thotlist.forEach(function(element, index, array)
+                {
+                    const thotuser = client.users.get(element.userid);
+                    const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
+                    message.channel.send(thottext)
+                })
+                if(!thotlist.length) message.channel.send("http://i1.kym-cdn.com/photos/images/newsfeed/000/770/675/627.png")
+
+            break;
+
+            case "destroyallthots":
+                
+                if (message.author.id !== adminuser.id)
+                    {
+                        return message.channel.send(`you must be a registered member of the thot patrol.`);
+                    }
+                message.channel.send(`you sure b?`).then(() =>
+                {
+                    const filter = m => message.author.id == m.author.id;
+
+                    message.channel.awaitMessages(filter, {time:10000, maxMatches: 1, errors: ['time']})
+                        .then(messages =>
+                            {
+                                if (messages.first().content.startsWith(`y`))
+                                {
+                                    thots.sync({force:true});
+                                    message.channel.send(`alright, done.`)
+                                }
+                                else
+                                {
+                                    message.channel.send(`alright, cancelled.`);
+                                }
+                            })
+                        .catch((error) => 
+                            {
+                                message.channel.send(`error: you took too long, idiot.`);
+                                console.log(error);
+                            });
+                });
+
             break;
 
             case "avatar":
@@ -137,7 +286,7 @@ client.on('message', message => {
                 }
                 else if (args[0]  == "y" || args[0]  == "n")
                 {
-                    for(var i = 0; i < votes.length; i++)
+                    for(let i = 0; i < votes.length; i++)
                     {
                         if(votes[i][0].id == message.author.id)
                         {
@@ -176,7 +325,7 @@ client.on('message', message => {
                         message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                         if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
 
-                        for(var i = 0; i < votes.length; i++)
+                        for(let i = 0; i < votes.length; i++)
                         {
                             if(votes[i][1] == "y")
                             {
@@ -214,7 +363,7 @@ client.on('message', message => {
                         nvotes = 0;
                         plus = "";
                         pollsendid = [];
-                        pollsendidexists = false;
+                        pollidexists = false;
 
                         client.user.setPresence({status:'online'});
                     }
@@ -236,7 +385,7 @@ client.on('message', message => {
                 {
                     if(!activepoll)
                     {
-                        activepoll = message.content.slice(prefix.length + command.length + 1);
+                        activepoll = argslist;
                         pollstarter = message.author;
                         pollschannel.send(`Poll: ${activepoll}`);
                         message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
@@ -245,7 +394,7 @@ client.on('message', message => {
                         client.user.setPresence({status:'dnd'});
                         
                         pollsendid = [];
-                        pollsendidexists = false;
+                        pollidexists = false;
                     }
                     else
                     {
@@ -267,21 +416,21 @@ client.on('message', message => {
                     message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`));
                     break;
                 }
-                for (var i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
+                for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
                 {
                     if (pollsendid[i][0].id == message.author.id) // If so...
                     {
-                        pollschannel.send(`${pollsendid[i][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
-                        pollsendidexists = true; // Make sure we don't make them a new one.
+                        pollschannel.send(`${pollsendid[i][1]}: ${argslist}`) // Send the message.
+                        pollidexists = true; // Make sure we don't make them a new one.
                     }
                 }
-                if (!pollsendidexists) // If not...
+                if (!pollidexists) // If not...
                 {
                     pollsendid.push([message.author, Math.floor(Math.random() * 50)]) // Store their entire user object (bite me) and a generated ID for them.
-                    pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${message.content.slice(prefix.length + command.length + 1)}`) // Send the message.
+                    pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${argslist}`) // Send the message.
                     message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
                 }
-                pollsendidexists = false; // Make sure to get that squared away.
+                pollidexists = false; // Make sure to get that squared away.
 
             break;
 
@@ -289,7 +438,7 @@ client.on('message', message => {
 
                 if(message.author.id == admin) // Perms check.
                 {
-                    eval(args.toString()).catch(message.channel.send); // Do what I ask.
+                    eval(argslist || message.channel.send('no')).catch(message.channel.send); // Do what I ask.
                 }
                 else
                 {
@@ -300,10 +449,32 @@ client.on('message', message => {
 
             case "ok": // ok
 
-                message.delete().catch(console.error(`ERROR: Could not delete message. Likely was in a DM chat.`)); // no ok
+                message.delete(); // no ok
                 message.channel.send("ok."); // ok
+
+            break;
+
+            case "coin": // Flip a coin.
+            case "flipacoin":
+            case "coinflip":
+
+                const coin = Math.floor(Math.random() * 2);
+                if (coin == 1)
+                {
+                    message.channel.send(`it's heads`);
+                }
+                else if (coin == 0) 
+                {
+                    message.channel.send(`it's tails`);
+                }
+                else
+                {
+                    message.channel.send(`uh what`);
+                }
 
             break;
 }})
 
 client.login(token);
+
+// when it's ok-bot time

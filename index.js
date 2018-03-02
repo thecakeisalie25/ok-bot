@@ -1,6 +1,7 @@
-const  {prefix, token, admin, pollschannelid, generalchannelid} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');
+const   querystring = require('querystring');
 const   client      = new Discord.Client();
 
 const   sequelize = new Sequelize('database', 'user', 'password', 
@@ -30,7 +31,8 @@ let     plus            = "";
 let     pollsendid      = [];
 let     pollidexists    = false;
 
-const   adminonly       = false
+const   adminonly       = false;
+const   wednesday       = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -39,21 +41,26 @@ client.on('ready', () =>
     client.user.setActivity(`for commands`, {type:'WATCHING'});
     
     pollschannel    = client.channels.get(pollschannelid);
-    generalchannel  = client.channels.get(generalchannelid);
+    wednesdaychat   = client.channels.get(wednesdaychannelid);
     adminuser       = client.users.get(admin);
 
-    if (process.argv[2] == "wednesday")
+    /*if (process.argv[2] == "wednesday")
     {
-        process.exitCode = 0;
-        generalchannel.send(`it is wednesday, my dudes.`)
+        wednesdaychat.send(`it is wednesday, my dudes.`)
         client.destroy();
-    }
+        process.exitCode = 0;
+    }*/
 
     thots.sync();
     });
 
 client.on('message', async message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (message.author.bot) return;
+    if (new Date().getDay() == 3 && message.channel.id == wednesdaychat.id && message.content.toLocaleLowerCase().includes("w") && wednesday)
+    {
+        message.channel.send(`hey.\ni noticed your message had a "w" in it.\ndid you know?\nit is wednesday, my dudes.`);
+    };
+    if (!message.content.startsWith(prefix)) return;
     if (adminonly && (message.author.id !== adminuser.id)) return;
     console.log(`${message.author.username}: ${message.content}`);
     const args      = message.content.slice(prefix.length).split(/ +/);
@@ -115,9 +122,11 @@ client.on('message', async message => {
             break;
 
             case "isthot":
+            case "thot":
         
                 if(args[0] === '@everyone' || args[0] === '@here')
                 {
+                    thots.update({megathot:true}, {where: {userid: message.author.id}});
                     return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
                 }
                 else if(message.mentions.users.size !== 1)
@@ -144,6 +153,8 @@ client.on('message', async message => {
             break;
 
             case "notathot":
+            case "destroythot":
+
                 if (message.author.id !== adminuser.id)
                 {
                     message.channel.send(`you must be a registered member of the thot patrol.`);
@@ -188,12 +199,48 @@ client.on('message', async message => {
             case "thotlist":
 
                 const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
-                const firstthot = client.users.get(thotlist[0].userid);
+                thotlist.sort(function (a,b)
+                    {
+                        return b.count - a.count;
+                    });
                 thotlist.forEach(function(element, index, array)
                 {
                     const thotuser = client.users.get(element.userid);
-                    console.log(`${index+1}. ${thotuser.username}: ${element.count}`)
+                    message.channel.send(`${index+1}. ${thotuser.username}: ${element.count}`)
                 })
+                if(!thotlist.length) message.channel.send("http://i1.kym-cdn.com/photos/images/newsfeed/000/770/675/627.png")
+
+            break;
+
+            case "destroyallthots":
+                
+                if (message.author.id !== adminuser.id)
+                    {
+                        return message.channel.send(`you must be a registered member of the thot patrol.`);
+                    }
+                message.channel.send(`you sure b?`).then(() =>
+                {
+                    const filter = m => message.author.id == m.author.id;
+
+                    message.channel.awaitMessages(filter, {time:10000, maxMatches: 1, errors: ['time']})
+                        .then(messages =>
+                            {
+                                if (messages.first().content.startsWith(`y`))
+                                {
+                                    thots.sync({force:true});
+                                    message.channel.send(`alright, done.`)
+                                }
+                                else
+                                {
+                                    message.channel.send(`alright, cancelled.`);
+                                }
+                            })
+                        .catch((error) => 
+                            {
+                                message.channel.send(`error: you took too long, idiot.`);
+                                console.log(error);
+                            });
+                });
 
             break;
 

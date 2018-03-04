@@ -1,4 +1,4 @@
-const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, wednesdaychannelid, commandlist} = require ('./config.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');
 const   client      = new Discord.Client();
@@ -17,7 +17,7 @@ const   thots       = sequelize.define('thots', {
     megathot:         Sequelize.BOOLEAN,
 });
 
-const   rants       = sequelize.define('rants', {
+/* const   rants       = sequelize.define('rants', {
     creatorid:        Sequelize.STRING ,
     rantid:           {type: Sequelize.STRING, unique: true, primaryKey: true},
     channelid:        Sequelize.STRING ,
@@ -30,7 +30,7 @@ const   rantms      = sequelize.define('rantms', {
     userid:           Sequelize.STRING ,
     rantid:           Sequelize.INTEGER,
     content:          Sequelize.TEXT   ,
-})
+}) */
 
 let     adminuser;
 let     pollschannel;
@@ -70,6 +70,15 @@ client.on('ready', () =>
 
 client.on('message', async message => {
     if (message.author.bot) return;
+    if (message.content.toLocaleLowerCase().match(/\bok(ay)*\b/gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
+    if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
+    if (message.content.match(/r\/.+?\b/)) // subreddit fix bot
+    {
+        message.content.match(/r\/.+?\b/).forEach(function(element, index, array)
+        {
+            message.channel.send(`https://reddit.com/${element}`)
+        });
+    }
     if (new Date().getDay() == 3 && message.channel.id == wednesdaychat.id && message.content.toLocaleLowerCase().includes("w") && wednesday)
     {
         message.channel.send(`hey.\ni noticed your message had a "w" in it.\ndid you know?\nit is wednesday, my dudes.`);
@@ -87,6 +96,22 @@ client.on('message', async message => {
 
                 message.channel.send(`i'm doin ok.`);
             
+            break;
+
+            case "help":
+
+                let helptext = `${prefix}${commandlist[i].command}: ${commandlist[i].help}`;
+                if (commandlist[i].aliases) {helptext+=`\nAliases: ${commandlist[i].aliases.join(', ')}`};
+                message.channel.send(helptext);
+
+            break;
+
+            case "thumbs":
+            case "thumbs":
+
+            await message.react(`👍`)
+            await message.react(`👎`)
+
             break;
 
             case "members":

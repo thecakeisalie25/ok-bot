@@ -1,0 +1,17 @@
+{
+    "commandlist" : 
+    [
+        {
+            "command"   : "status",
+            "arguments" : null,
+            "help"      : "Tells you if the bot is working properly. If you get two replies, send help.",
+            "longhelp"  : "",
+            "aliases"   : null,
+            "cases"     : null
+        },
+        {
+            "command"   : "help",
+            "arguments" : ""
+        }
+    ]
+}

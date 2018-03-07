@@ -4,14 +4,16 @@
         {
             "command"   : "status",
             "arguments" : null,
-            "help"      : "Tells you if the bot is working properly. If you get two replies, send help.",
-            "longhelp"  : "",
-            "aliases"   : null,
-            "cases"     : null
+            "help"      : "",
+            "longhelp"  : "Tells you if the bot is working properly. If you get two replies, send help.",
+            "aliases"   : null
         },
         {
             "command"   : "help",
-            "arguments" : ""
+            "arguments" : ["[command]"],
+            "help"      : "Whoa, meta!",
+            "longhelp"  : "Gives you a list of commands, or info on a specific command. Run without any arguments to show a basic list of commands.",
+            "aliases"   : null
         }
     ]
 }

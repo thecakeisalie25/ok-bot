@@ -1,4 +1,5 @@
-const  {prefix, token, admin, pollschannelid, wednesdaychannelid, commandlist} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
+//const   commandlist = require ('./help.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');
 const   client      = new Discord.Client();
@@ -68,13 +69,17 @@ client.on('ready', () =>
     thots.sync();
     });
 
+client.on('error', error => {
+    console.log(error);
+})
+
 client.on('message', async message => {
     if (message.author.bot) return;
     if (message.content.toLocaleLowerCase().match(/\bok(ay)*\b/gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
     if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
-    if (message.content.match(/r\/.+?\b/)) // subreddit fix bot
+    if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
     {
-        message.content.match(/r\/.+?\b/).forEach(function(element, index, array)
+        message.content.match(/(?:r|u)\/.+?\b/gm).forEach(function(element, index, array)
         {
             message.channel.send(`https://reddit.com/${element}`)
         });
@@ -98,13 +103,13 @@ client.on('message', async message => {
             
             break;
 
-            case "help":
-
-                let helptext = `${prefix}${commandlist[i].command}: ${commandlist[i].help}`;
-                if (commandlist[i].aliases) {helptext+=`\nAliases: ${commandlist[i].aliases.join(', ')}`};
-                message.channel.send(helptext);
-
-            break;
+            // case "help":
+// 
+                // let helptext = `${prefix}${commandlist[0].command}: ${commandlist[0].help}`;
+                // if (commandlist[0].aliases) {helptext+=`\nAliases: ${commandlist[0].aliases.join(', ')}`};
+                // message.channel.send(helptext);
+// 
+            // break;
 
             case "thumbs":
             case "thumbs":
@@ -471,7 +476,14 @@ client.on('message', async message => {
 
                 if(message.author.id == admin) // Perms check.
                 {
-                    eval(argslist || message.channel.send('no')).catch(message.channel.send); // Do what I ask.
+                    try 
+                    {
+                        eval(argslist || message.channel.send('no')).catch(message.channel.send); // Do what I ask.                        
+                    } 
+                    catch (error) 
+                    {
+                        message.channel.send(`ERROR: ${error}`).catch();    
+                    }
                 }
                 else
                 {
@@ -506,6 +518,13 @@ client.on('message', async message => {
                 }
 
             break;
+
+            case "getanimoji":
+
+                const infosuper = client.guilds.get(`229043861245263872`);
+                infosuper.emojis.forEach(emoji => {
+                    console.log(emoji);
+                })
 }})
 
 client.login(token);

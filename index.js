@@ -114,8 +114,8 @@ client.on('message', async message => {
             case "thumbs":
             case "thumbs":
 
-            await message.react(`👍`)
-            await message.react(`👎`)
+            await message.react(`👍`);
+            await message.react(`👎`);
 
             break;
 
@@ -170,7 +170,7 @@ client.on('message', async message => {
         
                 if(args[0] === '@everyone' || args[0] === '@here')
                 {
-                    thots.update({megathot:true}, {where: {userid: message.author.id}});
+                    thots.upda333te({megathot:true}, {where: {userid: message.author.id}});
                     return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
                 }
                 else if(message.mentions.users.size !== 1)
@@ -498,7 +498,26 @@ client.on('message', async message => {
                 message.channel.send("ok."); // ok
 
             break;
-
+        
+            case "canyoudothis":
+            case "butcanyoudothis": // Youtube API WIP to pull the latest pewdiepie video
+        
+                message.channel.send(`Only $399! (WIP)`);          
+        
+            break;
+        
+            case "quote":
+        
+                if(argslist.toInt())
+                {
+                    message.channel.send(`WIP: ${argslist.toInt()}`);
+                }
+                else
+                {
+                    message.channel.send(`Your message isn't an int`);
+                }
+            break;
+        
             case "coin": // Flip a coin.
             case "flipacoin":
             case "coinflip":

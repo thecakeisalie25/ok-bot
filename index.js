@@ -84,7 +84,6 @@ client.on('message', async message => {
         if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {
-<<<<<<< HEAD
             message.content.match(/(?:r|u)\/.+?\b/gm).forEach(function(element, index, array)
             {
                 message.channel.send(`https://reddit.com/${element}`)
@@ -144,61 +143,6 @@ client.on('message', async message => {
                 break;
     
                 case "whois":
-=======
-            message.channel.send(`https://reddit.com/${element}`)
-        });
-    }
-    if (new Date().getDay() == 3 && message.channel.id == wednesdaychat.id && message.content.toLocaleLowerCase().includes("w") && wednesday)
-    {
-        message.channel.send(`hey.\ni noticed your message had a "w" in it.\ndid you know?\nit is wednesday, my dudes.`);
-    };
-    if (!message.content.startsWith(prefix)) return;
-    if (adminonly && (message.author.id !== adminuser.id)) return;
-    console.log(`${message.author.username}: ${message.content}`);
-    const args      = message.content.slice(prefix.length).split(/ +/);
-    const command   = args.shift();
-    const argslist  = args.join(` `);
-
-    switch (command)
-    {
-            case "status":
-
-                message.channel.send(`i'm doin ok.`);
-            
-            break;
-
-            // case "help":
-// 
-                // let helptext = `${prefix}${commandlist[0].command}: ${commandlist[0].help}`;
-                // if (commandlist[0].aliases) {helptext+=`\nAliases: ${commandlist[0].aliases.join(', ')}`};
-                // message.channel.send(helptext);
-// 
-            // break;
-
-            case "thumbs":
-            case "thumbs":
-
-            await message.react(`👍`);
-            await message.react(`👎`);
-
-            break;
-
-            case "members":
-
-                message.channel.send(`${message.guild.name} has (${message.guild.memberCount}) members`);
-            
-            break;
-
-            case "kill":
-
-                if (message.author.id === admin)
-                { 
-                    message.channel.send(`k lol bye`);
-                    client.user.setActivity(`myself die`, {type:'WATCHING'});
-                    client.destroy();
-                }
-                else {message.channel.send(`fuck off`);}
->>>>>>> 332f960811f5fc6e934b861d73393629c2e9ab35
             
                     if(!message.mentions.users.size)
                     {
@@ -229,7 +173,6 @@ client.on('message', async message => {
                 case "isthot":
                 case "thot":
             
-<<<<<<< HEAD
                     if(args[0] === '@everyone' || args[0] === '@here')
                     {
                         thots.update({megathot:true}, {where: {userid: message.author.id}});
@@ -314,35 +257,6 @@ client.on('message', async message => {
                         const thotuser = client.users.get(element.userid);
                         const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
                         message.channel.send(thottext)
-=======
-            break;
-
-            case "isthot":
-            case "thot":
-        
-                if(args[0] === '@everyone' || args[0] === '@here')
-                {
-                    thots.upda333te({megathot:true}, {where: {userid: message.author.id}});
-                    return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
-                }
-                else if(message.mentions.users.size !== 1)
-                {
-                    return message.channel.send(`tag a user. not two users, and not zero users. don't even think about 3 users.`);
-                }
-                const thotmention = message.mentions.users.first();
-                const thot = await thots.findOne({where: {userid: thotmention.id}});
-                if(thot)
-                {
-                    thot.increment('count');
-                    message.channel.send(`${thotmention} is a thot, as determined by ${thot.get('count')} people so far.`);
-                }
-                else
-                {
-                    thots.create({
-                        userid: thotmention.id,
-                        count: 1,
-                        megathot: false,
->>>>>>> 332f960811f5fc6e934b861d73393629c2e9ab35
                     })
                     if(!thotlist.length) message.channel.send("http://i1.kym-cdn.com/photos/images/newsfeed/000/770/675/627.png")
     
@@ -607,7 +521,6 @@ client.on('message', async message => {
                     {
                         message.channel.send(`uh what`);
                     }
-<<<<<<< HEAD
     
                 break;
     
@@ -633,69 +546,6 @@ client.on('message', async message => {
         }
     }
 })
-=======
-                }
-                else
-                {
-                    message.channel.send("nope, next time try being larson."); // Or don't, if you can't.
-                }
-
-            break;
-
-            case "ok": // ok
-
-                message.delete(); // no ok
-                message.channel.send("ok."); // ok
-
-            break;
-        
-            case "canyoudothis":
-            case "butcanyoudothis": // Youtube API WIP to pull the latest pewdiepie video
-        
-                message.channel.send(`Only $399! (WIP)`);          
-        
-            break;
-        
-            case "quote":
-        
-                if(argslist.toInt())
-                {
-                    message.channel.send(`WIP: ${argslist.toInt()}`);
-                }
-                else
-                {
-                    message.channel.send(`Your message isn't an int`);
-                }
-            break;
-        
-            case "coin": // Flip a coin.
-            case "flipacoin":
-            case "coinflip":
-
-                const coin = Math.floor(Math.random() * 2);
-                if (coin == 1)
-                {
-                    message.channel.send(`it's heads`);
-                }
-                else if (coin == 0) 
-                {
-                    message.channel.send(`it's tails`);
-                }
-                else
-                {
-                    message.channel.send(`uh what`);
-                }
-
-            break;
-
-            case "getanimoji":
-
-                const infosuper = client.guilds.get(`229043861245263872`);
-                infosuper.emojis.forEach(emoji => {
-                    console.log(emoji);
-                })
-}})
->>>>>>> 332f960811f5fc6e934b861d73393629c2e9ab35
 
 client.login(token);
 

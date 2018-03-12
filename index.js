@@ -33,6 +33,8 @@ const   rantms      = sequelize.define('rantms', {
     content:          Sequelize.TEXT   ,
 }) */
 
+// TODO: put variables in commands.
+
 let     adminuser;
 let     pollschannel;
 
@@ -108,7 +110,7 @@ client.on('message', async message => {
                 
                 break;
     
-                // case "help":
+                // case "help": // TODO: this
     // 
                     // let helptext = `${prefix}${commandlist[0].command}: ${commandlist[0].help}`;
                     // if (commandlist[0].aliases) {helptext+=`\nAliases: ${commandlist[0].aliases.join(', ')}`};
@@ -117,7 +119,7 @@ client.on('message', async message => {
                 // break;
     
                 case "thumbs":
-                case "thumbs":
+                case "thumb":
     
                 await message.react(`👍`)
                 await message.react(`👎`)
@@ -142,7 +144,7 @@ client.on('message', async message => {
                 
                 break;
     
-                case "whois":
+                case "whois": // TODO: create a global function that gets a user by ID, name, mention, or other uses. mentioning a user for every command is bad.
             
                     if(!message.mentions.users.size)
                     {
@@ -156,7 +158,7 @@ client.on('message', async message => {
                 
                 break;
     
-                case "args":
+                case "args": // TODO: remove?
             
                     if (!args.length)
                     {
@@ -177,6 +179,10 @@ client.on('message', async message => {
                     {
                         thots.update({megathot:true}, {where: {userid: message.author.id}});
                         return message.channel.send(`${message.author.username} tried to ping everyone, and is hereby declared a megathot.`);
+                    }
+                    else if(message.mentions.users.size  == 3)
+                    {
+                        return message.channel.send(`i specifically requested the opposite of this`);
                     }
                     else if(message.mentions.users.size !== 1)
                     {
@@ -252,7 +258,7 @@ client.on('message', async message => {
                         {
                             return b.count - a.count;
                         });
-                    thotlist.forEach(function(element, index, array)
+                    thotlist.forEach(function(element, index, array) // TODO: arrow function
                     {
                         const thotuser = client.users.get(element.userid);
                         const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
@@ -329,7 +335,7 @@ client.on('message', async message => {
                     }
                     else if (args[0]  == "y" || args[0]  == "n")
                     {
-                        for(let i = 0; i < votes.length; i++)
+                        for(let i = 0; i < votes.length; i++) // TODO: foreach
                         {
                             if(votes[i][0].id == message.author.id)
                             {
@@ -356,7 +362,7 @@ client.on('message', async message => {
                         {
                             message.channel.send(activepoll);
                         }
-                        else if (!activepoll)
+                        else if (!activepoll) // FIXME: don't allow poll start from dm
                         {
                             message.channel.send(`There is no active poll. You can start one by writing a question after \`${prefix}poll\`.`);
                         }
@@ -368,7 +374,7 @@ client.on('message', async message => {
                             message.delete();
                             if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
     
-                            for(let i = 0; i < votes.length; i++)
+                            for(let i = 0; i < votes.length; i++) // TODO: .foreach
                             {
                                 if(votes[i][1] == "y")
                                 {
@@ -459,9 +465,9 @@ client.on('message', async message => {
                         message.delete();
                         break;
                     }
-                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid.
+                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid. TODO: .foreach? || or pollsendid.includes?
                     {
-                        if (pollsendid[i][0].id == message.author.id) // If so...
+                        if (pollsendid[i][0].id == message.author.id) // If so... 
                         {
                             pollschannel.send(`${pollsendid[i][1]}: ${argslist}`) // Send the message.
                             pollidexists = true; // Make sure we don't make them a new one.
@@ -524,14 +530,20 @@ client.on('message', async message => {
     
                 break;
     
-                case "getanimoji":
+                case "getanimoji": // TODO: emoji project? big gif?
     
                     const infosuper = client.guilds.get(`229043861245263872`);
                     infosuper.emojis.forEach(emoji => {
                         console.log(emoji);
                     })
     
-                break;   
+                break;
+
+                case "oof": // TODO: choke
+
+                    message.channel.send(`be patient, nerd. i'm doing the best i can.`);
+
+                break;
 }
     }
     catch(error)

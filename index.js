@@ -82,7 +82,7 @@ client.on('message', async message => {
     try 
     {
         if (message.author.bot) return;
-        if (message.content.toLocaleLowerCase().match(/\bok(ay)*\b/gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
         if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {

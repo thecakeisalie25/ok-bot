@@ -49,7 +49,7 @@ let     pollsendid      = [];
 let     pollidexists    = false;
 
 const   adminonly       = false;
-const   wednesday       = true;
+const   wednesday       = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -141,6 +141,12 @@ client.on('message', async message => {
                         client.destroy();
                     }
                     else {message.channel.send(`fuck off`);}
+                
+                break;
+
+                case "live": 
+                
+                    message.channel.send('no'); 
                 
                 break;
     
@@ -541,8 +547,40 @@ client.on('message', async message => {
 
                 case "oof": // TODO: choke
 
-                    message.channel.send(`be patient, nerd. i'm doing the best i can.`);
+                    message.channel.send(`be patient, nerd. i'm doing the best i can. {wip}`);
 
+                break;
+
+                case "tictactoe":
+                case "ttt":
+
+                    let tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; // an array of 3 arrays of 3, 0=blank, 1=O, 2=X.
+                    const parseboard = board => { // array of 3 arrays of 3 --> board in string, seperated by \n
+                        if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
+                        let boardstring = "";
+                        board.forEach(element => {
+                            element.forEach(element =>{
+                                switch(element)
+                                {
+                                    case 0:
+                                        boardstring += "_";
+                                    break;
+                                    case 1:
+                                        boardstring += "O";
+                                    break;
+                                    case 2:
+                                        boardstring += "X";
+                                    break;
+                                    default:
+                                        boardstring += "⁉";
+                                    break;
+                                }
+                            })
+                            boardstring += "\n"
+                        })
+                        return boardstring;
+                    }
+                    
                 break;
 }
     }

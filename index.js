@@ -110,7 +110,7 @@ client.on('message', async message => {
         {
                 case "status":
     
-                    message.channel.send(`i'm doin ok.`);
+                    message.channel.send(`i'm doin ok. (${client.ping}ms)`);
                 
                 break;
     

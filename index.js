@@ -78,6 +78,10 @@ client.on('error', error => {
     console.log(`------------------------------`);
 });
 
+client.on('guildCreate', guild =>{
+    console.log(guild);
+})
+
 client.on('message', async message => {
     try 
     {
@@ -579,6 +583,26 @@ client.on('message', async message => {
                             boardstring += "\n"
                         })
                         return boardstring;
+                    }
+                    const checkboard = board => { // array of 3 arrays of 3 --> "X", "O", or false. Who has won, or no winner yet.
+                        if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
+                        else if(board[0][0] == "2" && board[1][1] == "2" && board[2][2] == "2") return "X"; // [ \ ]
+                        else if(board[0][2] == "2" && board[1][1] == "2" && board[2][0] == "2") return "X"; // [ / ]
+                        else if(board[0][0] == "2" && board[1][0] == "2" && board[2][0] == "2") return "X"; // [|  ]
+                        else if(board[0][1] == "2" && board[1][1] == "2" && board[2][1] == "2") return "X"; // [ | ]
+                        else if(board[0][2] == "2" && board[1][2] == "2" && board[2][2] == "2") return "X"; // [  |]
+                        else if(board[0][0] == "2" && board[0][1] == "2" && board[0][2] == "2") return "X"; // [***]
+                        else if(board[1][0] == "2" && board[1][1] == "2" && board[1][2] == "2") return "X"; // [---]
+                        else if(board[2][0] == "2" && board[2][1] == "2" && board[2][2] == "2") return "X"; // [...]
+                        else if(board[0][0] == "1" && board[1][1] == "1" && board[2][2] == "1") return "O"; // [ \ ]
+                        else if(board[0][2] == "1" && board[1][1] == "1" && board[2][0] == "1") return "O"; // [ / ]
+                        else if(board[0][0] == "1" && board[1][0] == "1" && board[2][0] == "1") return "O"; // [|  ]
+                        else if(board[0][1] == "1" && board[1][1] == "1" && board[2][1] == "1") return "O"; // [ | ]
+                        else if(board[0][2] == "1" && board[1][2] == "1" && board[2][2] == "1") return "O"; // [  |]
+                        else if(board[0][0] == "1" && board[0][1] == "1" && board[0][2] == "1") return "O"; // [***]
+                        else if(board[1][0] == "1" && board[1][1] == "1" && board[1][2] == "1") return "O"; // [---]
+                        else if(board[2][0] == "1" && board[2][1] == "1" && board[2][2] == "1") return "O"; // [...]
+                        else return false;
                     }
                     
                 break;

@@ -79,7 +79,10 @@ client.on('message', async message => {
     try 
     {
         if (message.author.bot) return;
-        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && !message.content.startsWith(prefix)) // ok reaction
+        {
+            message.react(`🆗`)
+        };
         if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {
@@ -110,8 +113,8 @@ client.on('message', async message => {
                 case "thumbs":
                 case "thumb":
     
-                await message.react(`👍`)
-                await message.react(`👎`)
+                    await message.react(`👍`)
+                    await message.react(`👎`)
     
                 break;
     
@@ -525,10 +528,10 @@ client.on('message', async message => {
     
                 break;
     
-                case "getanimoji": // TODO: emoji project? big gif?
+                case "getemoji": // TODO: emoji project? big gif?
+                case "getanimoji":
     
-                    const infosuper = client.guilds.get(`229043861245263872`);
-                    infosuper.emojis.forEach(emoji => {
+                    message.guild.emojis.forEach(emoji => {
                         console.log(emoji);
                     })
     

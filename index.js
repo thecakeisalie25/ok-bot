@@ -72,15 +72,8 @@ client.on('ready', () =>
     });
 
 client.on('error', error => {
-    console.log(`------------------------------`);
-    console.log(`ERROR:`)
     console.log(error);
-    console.log(`------------------------------`);
 });
-
-client.on('guildCreate', guild =>{
-    console.log(guild);
-})
 
 client.on('message', async message => {
     try 
@@ -113,14 +106,6 @@ client.on('message', async message => {
                     message.channel.send(`i'm doin ok. (${client.ping}ms)`);
                 
                 break;
-    
-                // case "help": // TODO: this
-    // 
-                    // let helptext = `${prefix}${commandlist[0].command}: ${commandlist[0].help}`;
-                    // if (commandlist[0].aliases) {helptext+=`\nAliases: ${commandlist[0].aliases.join(', ')}`};
-                    // message.channel.send(helptext);
-    // 
-                // break;
     
                 case "thumbs":
                 case "thumb":

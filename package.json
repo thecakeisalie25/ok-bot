@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/thecakeisalie25/ok-bot#readme",
   "dependencies": {
-    "discord.js": "^11.3.0",
-    "sequelize": "^4.33.4",
+    "discord.js": "^11.3.2",
+    "sequelize": "^4.37.4",
     "sqlite3": "^3.1.13"
   }
 }

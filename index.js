@@ -48,8 +48,13 @@ let     plus            = "";
 let     pollsendid      = [];
 let     pollidexists    = false;
 
-const   adminonly       = false;
-const   wednesday       = false;
+const   userdetermine   = (message, multi = false) => { // takes a message and a multiple users bool.
+    if(typeof(message)  !== "object" ) throw "First argument must be a message.";
+    if(typeof(multi)    !== "boolean") throw "Second argument must be a bool.";
+}
+
+let     adminonly       = false;
+let     wednesday       = false;
 
 // When ON log to console.
 client.on('ready', () => 
@@ -139,7 +144,7 @@ client.on('message', async message => {
                 
                 break;
     
-                case "whois": // TODO: create a global function that gets a user by ID, name, mention, or other uses. mentioning a user for every command is bad.
+                case "whois":
             
                     if(!message.mentions.users.size)
                     {

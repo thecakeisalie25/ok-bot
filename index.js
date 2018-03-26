@@ -48,9 +48,12 @@ let     plus            = "";
 let     pollsendid      = [];
 let     pollidexists    = false;
 
-const   userdetermine   = (message, multi = false) => { // takes a message and a multiple users bool.
+const   userdetermine   = (message, multi = false) => {
+    // Arguments: Message object, boolean for multiple users.
+    // Returns  : User object (or error)
     if(typeof(message)  !== "object" ) throw "First argument must be a message.";
     if(typeof(multi)    !== "boolean") throw "Second argument must be a bool.";
+    
 }
 
 let     adminonly       = false;
@@ -84,7 +87,12 @@ client.on('message', async message => {
     try 
     {
         if (message.author.bot) return;
-        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && !message.content.startsWith(prefix)) {message.react(`🆗`)}; // ok reaction
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) 
+            && !message.content.startsWith(prefix)
+            && !message.channel.topic.includes(`<no-ok>`)) 
+        {
+            message.react(`🆗`)
+        };
         if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {

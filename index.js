@@ -553,6 +553,8 @@ client.on('message', async message => {
                     else
                     {
                         message.channel.send(`uh what`);
+                        message.channel.send(`uh`)
+                        message.channel.send(`it landed on it's edge i guess`)
                     }
     
                 break;

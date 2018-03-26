@@ -47,6 +47,16 @@ let     nvotes          = 0;
 let     plus            = "";
 let     pollsendid      = [];
 let     pollidexists    = false;
+let     trannybanny     ;
+const   okmotes         = ["🆗",
+                           "425427875894919183",
+                           "425427961257132052",
+                           "425427977992667136",
+                           "425428002571026443",
+                           "425428019914473477",
+                           "425428193676099585",
+                           "425428216413552640",
+                           "425428781113671691" ];
 
 const   userdetermine   = (message, multi = false) => {
     // Arguments: Message object, boolean for multiple users.
@@ -79,6 +89,10 @@ client.on('ready', () =>
     thots.sync();
     });
 
+client.on('guildMemberRemove', user => {
+    console.log(user);
+})
+
 client.on('error', error => {
     console.log(error);
 });
@@ -87,17 +101,22 @@ client.on('message', async message => {
     try 
     {
         if (message.author.bot) return;
-        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) 
-            && !message.content.startsWith(prefix)
-            && !message.channel.topic.includes(`<no-ok>`)) 
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && 
+        !message.content.startsWith(prefix) && 
+        !message.channel.topic.includes(`<no-ok>`)) 
         {
             message.react(`🆗`)
         };
-        if (message.content.includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
+        if (message.content.toLocaleLowerCase().includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
+        if (message.content.toLocaleLowerCase().includes(`ur dad lesbian`)) {message.channel.send(`no u but like times a billion`)}; // ur dad lesbian
+        if (message.content.toLocaleLowerCase().includes(`ur granny tranny`)) // ur granny tranny
+        {
+            if(message.author.id !== trannybanny) {message.channel.send(`Hey, that's not cool.\nTranny is actually a transphobic slur.\nThis server is one of acceptance, and we won't tolerate this language here.\nSo if you could keep your hateful, transphobic, rude comments to yourself, that would be great.\nAnd I know, i've heard it all before, "it's just a meme, don't be so rude"\nWell your "meme" can hurt people, did you know that?\nYeah. Words can hurt.\nSo if you decide to keep using your snide little comeback, you can expect this ban, you little shit.`); trannybanny = message.author.id;}
+            else{message.guild.members.find('id', message.author.id).kick(); message.channel.send(`I warned you.`); trannybanny = undefined;};
+        };
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {
-            message.content.match(/(?:r|u)\/.+?\b/gm).forEach(function(element, index, array)
-            {
+            message.content.match(/(?:r|u)\/.+?\b/gm).forEach(element => {
                 message.channel.send(`https://reddit.com/${element}`)
             });
         }
@@ -123,8 +142,8 @@ client.on('message', async message => {
                 case "thumbs":
                 case "thumb":
     
-                await message.react(`👍`)
-                await message.react(`👎`)
+                    await message.react(`👍`)
+                    await message.react(`👎`)
     
                 break;
     
@@ -538,13 +557,22 @@ client.on('message', async message => {
     
                 break;
     
-                case "getanimoji": // TODO: emoji project? big gif?
+                case "getemoji": // TODO: emoji project? big gif?
+                case "getanimoji":
     
-                    const infosuper = client.guilds.get(`229043861245263872`);
-                    infosuper.emojis.forEach(emoji => {
+                    message.guild.emojis.forEach(emoji => {
                         console.log(emoji);
+                        message.channel.send(`${emoji.name} == ${emoji.id} (\\${emoji})`);
                     })
     
+                break;
+
+                case "reactok":
+
+                    okmotes.forEach(element => {
+                        message.react(element);
+                    })
+
                 break;
 
                 case "oof": // TODO: choke
@@ -561,7 +589,7 @@ client.on('message', async message => {
                         if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
                         let boardstring = "";
                         board.forEach(element => {
-                            element.forEach(element =>{
+                            element.forEach(element => {
                                 switch(element)
                                 {
                                     case 0:

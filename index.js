@@ -58,9 +58,12 @@ const   okmotes         = ["🆗",
                            "425428216413552640",
                            "425428781113671691" ];
 
-const   userdetermine   = (message, multi = false) => { // takes a message and a multiple users bool.
+const   userdetermine   = (message, multi = false) => {
+    // Arguments: Message object, boolean for multiple users.
+    // Returns  : User object (or error)
     if(typeof(message)  !== "object" ) throw "First argument must be a message.";
     if(typeof(multi)    !== "boolean") throw "Second argument must be a bool.";
+    
 }
 
 let     adminonly       = false;
@@ -98,15 +101,12 @@ client.on('message', async message => {
     try 
     {
         if (message.author.bot) return;
-
-        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && !message.content.startsWith(prefix)) // ok reaction
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && 
+        !message.content.startsWith(prefix) && 
+        !message.channel.topic.includes(`<no-ok>`)) 
         {
             message.react(`🆗`)
         };
-
-        //message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm).forEach((element, index) => {
-
-        //})
         if (message.content.toLocaleLowerCase().includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.toLocaleLowerCase().includes(`ur dad lesbian`)) {message.channel.send(`no u but like times a billion`)}; // ur dad lesbian
         if (message.content.toLocaleLowerCase().includes(`ur granny tranny`)) // ur granny tranny

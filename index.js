@@ -460,7 +460,7 @@ client.on('message', async message => {
                         return boardstring;
                     }
                     const checkboard = board => { // array of 3 arrays of 3 --> "X", "O", or false. Who has won, or no winner yet.
-                        if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
+                             if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
                         else if(board[0][0] == "2" && board[1][1] == "2" && board[2][2] == "2") return "X"; // [ \ ]
                         else if(board[0][2] == "2" && board[1][1] == "2" && board[2][0] == "2") return "X"; // [ / ]
                         else if(board[0][0] == "2" && board[1][0] == "2" && board[2][0] == "2") return "X"; // [|  ]
@@ -512,10 +512,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[0][1] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[0][1] = 1;
                                                 break;
                                             }
                                         break;
@@ -523,10 +523,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[0][2] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[0][2] = 1;
                                                 break;
                                             }
                                         break;
@@ -539,10 +539,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[1][0] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[1][0] = 1;
                                                 break;
                                             }
                                         break;
@@ -550,10 +550,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[1][1] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[1][1] = 1;
                                                 break;
                                             }
                                         break;
@@ -561,10 +561,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[1][2] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[1][2] = 1;
                                                 break;
                                             }
                                         break;
@@ -577,10 +577,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[2][0] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[2][0] = 1;
                                                 break;
                                             }
                                         break;
@@ -588,10 +588,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[2][1] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[2][1] = 1;
                                                 break;
                                             }
                                         break;
@@ -599,10 +599,10 @@ client.on('message', async message => {
                                             switch(pos[3])
                                             {
                                                 case "X":
-                                                    tttboard[0][0] = 2;
+                                                    tttboard[2][2] = 2;
                                                 break;
                                                 case "O":
-                                                    tttboard[0][0] = 1;
+                                                    tttboard[2][2] = 1;
                                                 break;
                                             }
                                         break;

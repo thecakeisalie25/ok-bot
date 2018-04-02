@@ -483,7 +483,7 @@ client.on('message', async message => {
                     {
                         tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; // an array of 3 arrays of 3, 0=blank, 1=O, 2=X.
                     }
-                    else if(args[0] == "--move")
+                    else if(args[0] == "--move") // please skip to line 613, you don't want to see or deal with this code.
                     {
                         if(!args[1].length == 3)
                         {

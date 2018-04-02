@@ -18,52 +18,41 @@ const   thots       = sequelize.define('thots', {
     megathot:         Sequelize.BOOLEAN,
 });
 
-/* const   rants       = sequelize.define('rants', {
-    creatorid:        Sequelize.STRING ,
-    rantid:           {type: Sequelize.STRING, unique: true, primaryKey: true},
-    channelid:        Sequelize.STRING ,
+const   polls       = sequelize.define('polls', {
+    creatorid:        Sequelize.STRING,
+    pollid:           {type: Sequelize.INTEGER, primaryKey: true},
+    question:         Sequelize.STRING,
+    options:          Sequelize.ARRAY(Sequelize.TEXT),
     active:           Sequelize.BOOLEAN,
-    type:             Sequelize.STRING ,
-    originalmessage:  Sequelize.TEXT   ,
 })
 
-const   rantms      = sequelize.define('rantms', {
-    userid:           Sequelize.STRING ,
-    rantid:           Sequelize.INTEGER,
-    content:          Sequelize.TEXT   ,
-}) */
-
-// TODO: put variables in commands.
+const   votes       = sequelize.define('votes', {
+    poll:             Sequelize.INTEGER,
+    userid:           Sequelize.STRING,
+    vote:             Sequelize.INTEGER,
+})
 
 let     adminuser;
 let     pollschannel;
 
-let     activepoll      = false;
-let     pollstarter;
-let     votes           = [];
-let     userhasvoted    = false;
-let     yvotes          = 0;
-let     nvotes          = 0;
-let     plus            = "";
-let     pollsendid      = [];
-let     pollidexists    = false;
-let     trannybanny     ;
-const   okmotes         = ["🆗",
-                           "425427875894919183",
-                           "425427961257132052",
-                           "425427977992667136",
-                           "425428002571026443",
-                           "425428019914473477",
-                           "425428193676099585",
-                           "425428216413552640",
-                           "425428781113671691" ];
+let     pollsendid = [];
+let     pollidexists = false;
+let     trannybanny;
+let tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
-const   userdetermine   = (message, multi = false) => {
-    // Arguments: Message object, boolean for multiple users.
+const   userdetermine   = (message, mtext, multi = false) => {
+    // Arguments: Message object, text to match, boolean for multiple users.
     // Returns  : User object (or error)
     if(typeof(message)  !== "object" ) throw "First argument must be a message.";
     if(typeof(multi)    !== "boolean") throw "Second argument must be a bool.";
-    
+    if(/\d{18}/g.exec(mtext)) // If mtext is an ID, get the user by ID.
+    {
+        return client.fetchUser(mtext)
+    }
+    else if(message.mentions.first())
+    {
+        return message.mentions.first();
+    }
 }
 
 let     adminonly       = false;
@@ -86,7 +75,7 @@ client.on('ready', () =>
         process.exitCode = 0;
     }*/
 
-    thots.sync();
+    [thots, polls, votes].forEach(element => element.sync());
     });
 
 client.on('guildMemberRemove', user => {
@@ -182,20 +171,6 @@ client.on('message', async message => {
                         message.channel.send(`They are ${message.mentions.users.first().username}\nAnd their ID is ${message.mentions.users.first().id}`);
                     }
                     else{message.channel.send(`nah :b:`);}
-                
-                break;
-    
-                case "args": // TODO: remove?
-            
-                    if (!args.length)
-                    {
-                        return message.channel.send(`dude you gotta give me SOMETHING to work with here.`);
-                    }
-                    else if (args[0] === 'ok')
-                    {
-                        return message.channel.send(`ok`);
-                    }
-                    message.channel.send(`uwu u thot: ${args[0]}`);
                 
                 break;
     
@@ -341,144 +316,17 @@ client.on('message', async message => {
                 break;
     
                 case "vote":
-    
-                    if (message.guild)
-                    {
-                        message.channel.send(`Public voting is disallowed, please DM the bot instead.`);
-                        message.delete();
-                        message.author.send(`Vote here with \`${prefix}vote\` <y or n>`);
-                    }
-                    else if (!activepoll)
-                    {
-                        message.reply(`There's no active poll, but I love the enthusiasm!`);
-                    }
-                    else if (!args.length)
-                    {
-                        message.reply(`You can vote on the active poll using \`${prefix}vote\` <y or n>\nFor reference, the active poll: ${activepoll}`);
-                    }
-                    else if (args[0] !== "y" && args[0] !== "n")
-                    {
-                        message.reply(`I'm not the smartest bot, please use y or n only.`);
-                    }
-                    else if (args[0]  == "y" || args[0]  == "n")
-                    {
-                        for(let i = 0; i < votes.length; i++) // TODO: foreach
-                        {
-                            if(votes[i][0].id == message.author.id)
-                            {
-                                message.channel.send(`Sorry, you've voted on this poll before.`);
-                                userhasvoted = true;
-                            }
-                        }
-                        if(!userhasvoted)
-                        {
-                            votes.push([message.author, args[0]]);
-                            message.reply(`Your vote has been counted.`);
-                        }
-                        userhasvoted = false;                    
-                    }
-    
+
+                    //TODO: Add code.
+
+
                 break;
     
                 case "poll": // ok.poll | ok.poll [Is the earth flat?] | ok.poll end
                 case "polls":
-    
-                    if (!args.length)
-                    {
-                        if (activepoll)
-                        {
-                            message.channel.send(activepoll);
-                        }
-                        else if (!activepoll) // FIXME: don't allow poll start from dm
-                        {
-                            message.channel.send(`There is no active poll. You can start one by writing a question after \`${prefix}poll\`.`);
-                        }
-                    }
-                    else if (args[0] == "end")
-                    {
-                        if (message.author.id == pollstarter.id || message.author.id == admin)
-                        {
-                            message.delete();
-                            if(!message.channel.id == pollschannel.id)message.channel.send(`Alright, poll unset. Results have been posted in ${pollschannel}`);
-    
-                            for(let i = 0; i < votes.length; i++) // TODO: .foreach
-                            {
-                                if(votes[i][1] == "y")
-                                {
-                                    yvotes++;
-                                }
-                                else if(votes[i][1] == "n")
-                                {
-                                    nvotes++;
-                                }
-                                else
-                                {
-                                    pollschannel.send("There was an error recounting votes. Vote counting will continue, but may not be accurate.");
-                                    pollschannel.send(`This error occurs when a vote is recorded as neither y nor n.`);
-                                }
-                            }
-    
-                            if( yvotes - nvotes > 0 )
-                            {
-                                plus = "+";
-                            }
-                            else
-                            {
-                                plus = "";
-                            }
-                            pollschannel.send(`${activepoll}`);
-                            pollschannel.send(`Voting results: ${plus}${yvotes - nvotes}`);
-                            pollschannel.send(`Votes for yes: ${yvotes}`);
-                            pollschannel.send(`Votes for no: ${nvotes}`);
-    
-                            activepoll = false;
-                            pollstarter;
-                            votes = [];
-                            userhasvoted = false;
-                            yvotes = 0;
-                            nvotes = 0;
-                            plus = "";
-                            pollsendid = [];
-                            pollidexists = false;
-    
-                            client.user.setPresence({status:'online'});
-                        }
-                        else
-                        {
-                            message.delete();
-                            message.channel.send(`You didn't start this poll, so you can't end it. If they've forgotten, message Larson.`); 
-                        }
-                    }
-                    else if (args[0] == "help" && args.length == 1)
-                    {
-                        message.channel.send(`Usage: ${prefix}${command} <Question> || ${prefix}${command} end`);
-                    }
-                    else if (args[0] == "count")
-                    {
-                        message.channel.send
-                    }
-                    else
-                    {
-                        if(!activepoll)
-                        {
-                            activepoll = argslist;
-                            pollstarter = message.author;
-                            pollschannel.send(`Poll: ${activepoll}`);
-                            message.delete();
-                            pollschannel.send(`Use \`${prefix}poll end\` to stop the poll and show the results.`);
-    
-                            client.user.setPresence({status:'dnd'});
-                            
-                            pollsendid = [];
-                            pollidexists = false;
-                        }
-                        else
-                        {
-                            message.channel.send(`Sorry, there is an active poll currently.`);
-                            message.channel.send(activepoll);
-                        }
-                    }
-    
+
+                    // TODO: Add code.
+
                 break;
     
                 case "pollsend":
@@ -577,16 +425,15 @@ client.on('message', async message => {
 
                 break;
 
-                case "oof": // TODO: choke
+                case "oof":
 
-                    message.channel.send(`be patient, nerd. i'm doing the best i can. {wip}`);
+                    message.channel.send(`if she say oof, she like being choked.`);
 
                 break;
 
                 case "tictactoe":
                 case "ttt":
 
-                    let tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; // an array of 3 arrays of 3, 0=blank, 1=O, 2=X.
                     const parseboard = board => { // array of 3 arrays of 3 --> board in string, seperated by \n
                         if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
                         let boardstring = "";
@@ -632,7 +479,139 @@ client.on('message', async message => {
                         else if(board[2][0] == "1" && board[2][1] == "1" && board[2][2] == "1") return "O"; // [...]
                         else return false;
                     }
-                    
+                    if(args[0] == "--clear")
+                    {
+                        tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; // an array of 3 arrays of 3, 0=blank, 1=O, 2=X.
+                    }
+                    else if(args[0] == "--move")
+                    {
+                        if(!args[1].length == 3)
+                        {
+                            return message.channel.send(`Try again with a 3 character place code.`)
+                        }
+                        else
+                        {
+                            let pos = args[1].split("");
+                            switch(pos[0])
+                            {
+                                case "U":
+                                    switch(pos[1])
+                                    {
+                                        case "L":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "C":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "R":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                    }
+                                break;
+                                case "C":
+                                    switch(pos[1])
+                                    {
+                                        case "L":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "C":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "R":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                    }
+                                break;
+                                case "D":
+                                    switch(pos[1])
+                                    {
+                                        case "L":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "C":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                        case "R":
+                                            switch(pos[3])
+                                            {
+                                                case "X":
+                                                    tttboard[0][0] = 2;
+                                                break;
+                                                case "O":
+                                                    tttboard[0][0] = 1;
+                                                break;
+                                            }
+                                        break;
+                                    }
+                                break; // gon' burn it up
+                            }
+                        }
+                    }
+                    message.channel.send(parseboard(tttboard));
                 break;
 }
     }

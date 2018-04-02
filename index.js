@@ -612,6 +612,15 @@ client.on('message', async message => {
                         }
                     }
                     message.channel.send(parseboard(tttboard));
+                    switch(checkboard(tttboard))
+                    {
+                        case false:
+                            message.channel.send(`No winner yet...`);
+                        break;
+                        default:
+                            message.channel.send(`The winner is: ${checkboard(tttboard) || "Larson fucked up."}`);
+                        break;
+                    }
                 break;
 }
     }

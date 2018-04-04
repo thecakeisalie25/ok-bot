@@ -318,13 +318,11 @@ client.on('message', async message => {
                 case "vote":
 
                     //TODO: Add code.
-                    const msgtext;
-                    msgtext += "i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all\n";
-                    msgtext += "so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.\n";
-                    msgtext += "sorry for any inconvenience this caused\n."
-                    msgtext += "it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.\n";
-                    msgtext += "because i already know.";
-                    message.channel.send(msgtext)
+                    message.channel.send(`i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all
+so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.
+sorry for any inconvenience this caused.
+it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.
+because i already know.`);
 
                 break;
     
@@ -332,13 +330,11 @@ client.on('message', async message => {
                 case "polls":
 
                     // TODO: Add code.
-                    const msgtext;
-                    msgtext += "i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all\n";
-                    msgtext += "so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.\n";
-                    msgtext += "sorry for any inconvenience this caused.\n";
-                    msgtext += "it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.\n";
-                    msgtext += "because i already know.";
-                    message.channel.send(msgtext)
+                    message.channel.send(`i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all
+so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.
+sorry for any inconvenience this caused.
+it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.
+because i already know.`);
 
                 break;
     

@@ -22,7 +22,7 @@ const   polls       = sequelize.define('polls', {
     creatorid:        Sequelize.STRING,
     pollid:           {type: Sequelize.INTEGER, primaryKey: true},
     question:         Sequelize.STRING,
-    options:          Sequelize.ARRAY(Sequelize.TEXT),
+
     active:           Sequelize.BOOLEAN,
 })
 
@@ -36,9 +36,8 @@ let     adminuser;
 let     pollschannel;
 
 let     pollsendid = [];
-let     pollidexists = false;
 let     trannybanny;
-let tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+let     tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
 const   userdetermine   = (message, mtext, multi = false) => {
     // Arguments: Message object, text to match, boolean for multiple users.
@@ -75,7 +74,9 @@ client.on('ready', () =>
         process.exitCode = 0;
     }*/
 
-    [thots, polls, votes].forEach(element => element.sync());
+    [thots].forEach(element => element.sync());
+    polls.sync({force:true});
+    votes.sync({force:true});
     });
 
 client.on('guildMemberRemove', user => {
@@ -98,11 +99,6 @@ client.on('message', async message => {
         };
         if (message.content.toLocaleLowerCase().includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.toLocaleLowerCase().includes(`ur dad lesbian`)) {message.channel.send(`no u but like times a billion`)}; // ur dad lesbian
-        if (message.content.toLocaleLowerCase().includes(`ur granny tranny`)) // ur granny tranny
-        {
-            if(message.author.id !== trannybanny) {message.channel.send(`Hey, that's not cool.\nTranny is actually a transphobic slur.\nThis server is one of acceptance, and we won't tolerate this language here.\nSo if you could keep your hateful, transphobic, rude comments to yourself, that would be great.\nAnd I know, i've heard it all before, "it's just a meme, don't be so rude"\nWell your "meme" can hurt people, did you know that?\nYeah. Words can hurt.\nSo if you decide to keep using your snide little comeback, you can expect this ban, you little shit.`); trannybanny = message.author.id;}
-            else{message.guild.members.find('id', message.author.id).kick(); message.channel.send(`I warned you.`); trannybanny = undefined;};
-        };
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {
             message.content.match(/(?:r|u)\/.+?\b/gm).forEach(element => {
@@ -318,11 +314,6 @@ client.on('message', async message => {
                 case "vote":
 
                     //TODO: Add code.
-                    message.channel.send(`i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all
-so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.
-sorry for any inconvenience this caused.
-it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.
-because i already know.`);
 
                 break;
     
@@ -330,11 +321,16 @@ because i already know.`);
                 case "polls":
 
                     // TODO: Add code.
-                    message.channel.send(`i feel like absolute shit saying this but uh my code was so broken that it didn't even work at all
-so uh sorry about that. i'm such a bad coder that i just decided to remove it entirely.
-sorry for any inconvenience this caused.
-it's not your fault, though, so don't feel bad. i'm just saying, don't dm me and say that my code's broken.
-because i already know.`);
+                    let collect; // Define it here so that the code looks pretty, no other reason.
+                    const filter  = m => message.author.id === m.author.id;
+
+                    message.channel.send(`What is your favorite color?`);
+                    collect       = await message.channel.awaitMessages(filter, {time: 20000, maxMatches: 1, errors: ['time']});
+                    const color   = collect.first().content;
+
+                    message.channel.send(`What is your favorite number?`);
+                    collect       = await message.channel.awaitMessages(filter, {time: 20000, maxMatches: 1, errors: ['time']});
+                    const number  = collect.first().content;
 
                 break;
     
@@ -343,6 +339,7 @@ because i already know.`);
                 case "anonsend":
                 case "anonchat":
     
+                    let pollsendid;
                     if (message.guild)
                     {
                         message.channel.send(`Sorry, this command is only usable via DM`); // Otherwise this command would be useless.
@@ -363,7 +360,6 @@ because i already know.`);
                         pollschannel.send(`${pollsendid[pollsendid.length-1][1]}: ${argslist}`) // Send the message.
                         message.author.send(`Your ID is ${pollsendid[pollsendid.length-1][1]}`) // Send them their ID only when they make a new one.
                     }
-                    pollidexists = false; // Make sure to get that squared away.
     
                 break;
     

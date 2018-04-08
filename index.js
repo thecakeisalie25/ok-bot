@@ -22,8 +22,9 @@ const   polls       = sequelize.define('polls', {
     creatorid:        Sequelize.STRING,
     pollid:           {type: Sequelize.INTEGER, primaryKey: true},
     question:         Sequelize.STRING,
-
+    choices:          Sequelize.ARRAY(Sequelize.TEXT),
     active:           Sequelize.BOOLEAN,
+    until:            Sequelize.DATE,
 })
 
 const   votes       = sequelize.define('votes', {
@@ -54,7 +55,7 @@ const   userdetermine   = (message, mtext, multi = false) => {
     }
 }
 
-let     adminonly       = false;
+let     adminonly       = true ;
 let     wednesday       = false;
 
 // When ON log to console.

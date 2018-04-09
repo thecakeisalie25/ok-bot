@@ -59,7 +59,7 @@ const   userdetermine   = (message, mtext, multi = false) => {
 let     adminonly       = false ;
 let     wednesday       = false;
 
-// When ON log to console.
+// Init function
 client.on('ready', () => 
     {
     console.log('---Alright, we\'re up and running!---');
@@ -89,15 +89,16 @@ client.on('error', error => {
     console.log(error);
 });
 
+// Message handler.
 client.on('message', async message => {
     try 
     {
-        if (message.author.bot) return;
-        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && 
-        !message.content.startsWith(prefix) && 
-        !message.channel.topic.includes(`<no-ok>`)) 
+        if (message.author.bot) return; // Don't parse bot messages.
+        if (message.content.toLocaleLowerCase().match(/(\bok(?:a+y+)?\b)|o\|</gm) && // If message contains "ok"...
+        !message.content.startsWith(prefix) && // ...And isn't a command...
+        !message.channel.topic.includes(`<no-ok>`)) // ...And it's okay to react here...
         {
-            message.react(`🆗`)
+            message.react(`🆗`) // ...React "OK" to their message.
         };
         if (message.content.toLocaleLowerCase().includes(`ur mom gay`)) {message.channel.send(`no u`)}; // ur mom gay
         if (message.content.toLocaleLowerCase().includes(`ur dad lesbian`)) {message.channel.send(`no u but like times a billion`)}; // ur dad lesbian

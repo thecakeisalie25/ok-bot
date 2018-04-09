@@ -323,17 +323,42 @@ client.on('message', async message => {
                 case "poll": // ok.poll | ok.poll [Is the earth flat?] | ok.poll end
                 case "polls":
 
-                    // TODO: Add code.
-                    let collect; // Define it here so that the code looks pretty, no other reason.
                     const filter  = m => message.author.id === m.author.id;
 
-                    message.channel.send(`What is your favorite color?`);
-                    collect       = await message.channel.awaitMessages(filter, {time: 20000, maxMatches: 1, errors: ['time']});
-                    const color   = collect.first().content;
+                    message.channel.send(`What's the poll question?\neg. \`Which is better, cats or dogs?\``);
+                    let collect    = await message.channel.awaitMessages(filter, {time: 60000, maxMatches: 1, errors: ['time']})
+                        .catch(err => message.channel.send("Sorry, you took too long."));
+                    let poll      = collect.first().content;
+                    if(poll.startsWith(`${prefix}${command}`))
+                    {
+                        return await message.channel.send(`Don't include \`${prefix}${command}\` in your response, just answer the questions naturally. Restarting the command, it causes problems otherwise.`);
+                    }
 
-                    message.channel.send(`What is your favorite number?`);
-                    collect       = await message.channel.awaitMessages(filter, {time: 20000, maxMatches: 1, errors: ['time']});
-                    const number  = collect.first().content;
+                    message.channel.send(`What are the choices? (don't include "abstain", that gets added automatically.)\neg. \`cats,dogs\``);
+                    message.channel.send(`Tip: Don't use emojis for each choice, write them out as words.`);
+                    collect       = await message.channel.awaitMessages(filter, {time: 60000, maxMatches: 1, errors: ['time']})
+                        .catch(err => message.channel.send("Sorry, you took too long."));
+                    let choices   = collect.first().content;
+                    if(choices.startsWith(`${prefix}${command}`))
+                    {
+                        return await message.channel.send(`Don't include \`${prefix}${command}\` in your response, just answer the questions naturally. Restarting the command, it causes problems otherwise.`);
+                    }
+                    choices       = choices.split(/, ?/gm); // Split the comma seperated entries into an array.
+                    choices.push("abstain");
+
+                    message.channel.send(`How long should the poll be active?\neg. \`2 hours, 10 minutes\` (Supports days, hours, and minutes.)\neg. \`2h10m\`\neg.\`until 6:00 PM\` (This will carry over until tomorrow if it's past 6:00PM already)\neg. \`Forever\` (This will go on until you manually cancel it)`);
+                    collect       = await message.channel.awaitMessages(filter, {time: 60000, maxMatches: 1, errors: ['time']})
+                        .catch(err => message.channel.send("Sorry, you took too long."));
+                    let until     = collect.first().content;
+                    if(until.startsWith(`${prefix}${command}`))
+                    {
+                        return await message.channel.send(`Don't include \`${prefix}${command}\` in your response, just answer the questions naturally. Restarting the command, it causes problems otherwise.`);
+                    }
+                    let date      = new Date();
+
+                    // /(\d+) ?(\w)/gm is a good regex, group 1 is number, group 2 is time unit. Be sure to check it with the user, and have them contact me (explicit mention, with the arrow brackets and ID) if it's incorrect.
+
+                    // You're writing good code out here, and making real progress! I'm proud of you! Keep it up!!!!
 
                 break;
     

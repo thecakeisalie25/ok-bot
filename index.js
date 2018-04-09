@@ -1,8 +1,9 @@
 const  {prefix, token, admin, pollschannelid, wednesdaychannelid, bgcolor, fgcolor} = require ('./config.json');
 //const   commandlist = require ('./help.json');
-const   Discord     = require('discord.js');
+const   discord     = require('discord.js');
+const   jimp        = require('jimp');
 const   Sequelize   = require('sequelize');
-const   client      = new Discord.Client();
+const   client      = new discord.Client();
 
 const   sequelize = new Sequelize('database', 'user', 'password', 
 {
@@ -55,7 +56,7 @@ const   userdetermine   = (message, mtext, multi = false) => {
     }
 }
 
-let     adminonly       = true ;
+let     adminonly       = false ;
 let     wednesday       = false;
 
 // When ON log to console.

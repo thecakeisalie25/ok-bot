@@ -346,7 +346,7 @@ client.on('message', async message => {
                     choices       = choices.split(/, ?/gm); // Split the comma seperated entries into an array.
                     choices.push("abstain");
 
-                    message.channel.send(`How long should the poll be active?\neg. \`2 hours, 10 minutes\` (Supports days, hours, and minutes.)\neg. \`2h10m\`\neg.\`until 6:00 PM\` (This will carry over until tomorrow if it's past 6:00PM already)\neg. \`Forever\` (This will go on until you manually cancel it)`);
+                    message.channel.send(`How long should the poll be active?\neg. \`2 hours, 10 minutes\` (Supports days, hours, and minutes.)\neg. \`2h10m\`\neg. \`Forever\` (This will go on until you manually cancel it)`);
                     collect       = await message.channel.awaitMessages(filter, {time: 60000, maxMatches: 1, errors: ['time']})
                         .catch(err => message.channel.send("Sorry, you took too long."));
                     let until     = collect.first().content;

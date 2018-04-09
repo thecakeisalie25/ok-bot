@@ -1,4 +1,4 @@
-const  {prefix, token, admin, pollschannelid, wednesdaychannelid} = require ('./config.json');
+const  {prefix, token, admin, pollschannelid, wednesdaychannelid, bgcolor, fgcolor} = require ('./config.json');
 //const   commandlist = require ('./help.json');
 const   Discord     = require('discord.js');
 const   Sequelize   = require('sequelize');

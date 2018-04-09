@@ -3,5 +3,7 @@
     "token": "<insert token here>",
     "admin": "<admin user id>",
     "pollschannelid": "<channel id>",
-    "generalchannelid": "<channel id>"
+    "generalchannelid": "<channel id>",
+    "bgcolor": "#303066",
+    "fgcolor": "#CCFF99"
 }

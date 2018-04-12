@@ -150,7 +150,7 @@ client.on('message', async message => {
                         client.destroy();
                     }
                     else {message.channel.send(`fuck off`);}
-                
+
                 break;
 
                 case "live": 

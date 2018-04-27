@@ -2,6 +2,7 @@ const  {prefix, token, admin, pollschannelid, wednesdaychannelid, bgcolor, fgcol
 //const   commandlist = require ('./help.json');
 const   discord     = require('discord.js');
 const   jimp        = require('jimp');
+const   schedule    = require('node-schedule');
 const   Sequelize   = require('sequelize');
 const   client      = new discord.Client();
 
@@ -24,6 +25,7 @@ const   polls       = sequelize.define('polls', {
     pollid:           {type: Sequelize.INTEGER, primaryKey: true},
     question:         Sequelize.STRING,
     choices:          Sequelize.ARRAY(Sequelize.TEXT),
+    serverid:         Sequelize.STRING,
     active:           Sequelize.BOOLEAN,
     until:            Sequelize.DATE,
 })
@@ -346,7 +348,7 @@ client.on('message', async message => {
                     choices       = choices.split(/, ?/gm); // Split the comma seperated entries into an array.
                     choices.push("abstain");
 
-                    message.channel.send(`How long should the poll be active?\neg. \`2 hours, 10 minutes\` (Supports days, hours, and minutes.)\neg. \`2h10m\`\neg. \`Forever\` (This will go on until you manually cancel it)`);
+                    message.channel.send(`How long should the poll be active?\neg. \`3 days, 2 hours, 10 minutes\` \neg. \`3d2h10m\`\neg. \`Forever\` (This will go on until you manually cancel it)`);
                     collect       = await message.channel.awaitMessages(filter, {time: 60000, maxMatches: 1, errors: ['time']})
                         .catch(err => message.channel.send("Sorry, you took too long."));
                     let until     = collect.first().content;
@@ -356,9 +358,36 @@ client.on('message', async message => {
                     }
                     let date      = new Date();
 
-                    // /(\d+) ?(\w)/gm is a good regex, group 1 is number, group 2 is time unit. Be sure to check it with the user, and have them contact me (explicit mention, with the arrow brackets and ID) if it's incorrect.
+                    if(!until.match(/(\d+) ?(\w)/gm))
+                    {
+                        return message.channel.send(`No date string found, assuming forever.\nEnd with ${prefix}endpoll.`);
+                    } 
+                    else
+                    {
+                        until.match(/(\d+) ?(\w)/gm).forEach(element => {
+                            if(element.endsWith("d"))
+                            {
+                                const num = element.split(/[ ,a-z,A-Z]/g)[0];
+                                date = new Date(date.getTime() + (num * 1000 * 60 * 60 * 24));
+                            }
+                            else if(element.endsWith("h"))
+                            {
+                                const num = element.split(/[ ,a-z,A-Z]/g)[0];
+                                date = new Date(date.getTime() + (num * 1000 * 60 * 60));
+                            }
+                            else if(element.endsWith("m"))
+                            {
+                                const num = element.split(/[ ,a-z,A-Z]/g)[0];
+                                date = new Date(date.getTime() + (num * 1000 * 60));
+                            }
+                        })
+                    }
+                    message.channel.send(new Date().toString());
+                    message.channel.send(date.toString());
+                    message.channel.send(until);
+                    message.channel.send(poll);
+                    message.channel.send(choices);
 
-                    // You're writing good code out here, and making real progress! I'm proud of you! Keep it up!!!!
 
                 break;
     
@@ -468,14 +497,14 @@ client.on('message', async message => {
                 case "ttt":
 
                     const parseboard = board => { // array of 3 arrays of 3 --> board in string, seperated by \n
-                        if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
+                        if(board.length !== 3) throw "Argument passed must be a Tic Tac Toe board."
                         let boardstring = "";
-                        board.forEach(element => {
+                        board.forEach(element =>{
                             element.forEach(element => {
                                 switch(element)
                                 {
                                     case 0:
-                                        boardstring += "_";
+                                        boardstring += "-";
                                     break;
                                     case 1:
                                         boardstring += "O";
@@ -490,10 +519,10 @@ client.on('message', async message => {
                             })
                             boardstring += "\n"
                         })
-                        return boardstring;
+                        return `\`\`\`\n${boardstring}\`\`\``;
                     }
                     const checkboard = board => { // array of 3 arrays of 3 --> "X", "O", or false. Who has won, or no winner yet.
-                             if(board.length !== 3 || !board[0][2] || !board[1][2] || !board[2][2]) throw "Argument passed must be a Tic Tac Toe board."
+                             if(board.length !== 3) throw "Argument passed must be a Tic Tac Toe board."
                         else if(board[0][0] == "2" && board[1][1] == "2" && board[2][2] == "2") return "X"; // [ \ ]
                         else if(board[0][2] == "2" && board[1][1] == "2" && board[2][0] == "2") return "X"; // [ / ]
                         else if(board[0][0] == "2" && board[1][0] == "2" && board[2][0] == "2") return "X"; // [|  ]
@@ -516,7 +545,7 @@ client.on('message', async message => {
                     {
                         tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; // an array of 3 arrays of 3, 0=blank, 1=O, 2=X.
                     }
-                    else if(args[0] == "--move") // please skip to line 613, you don't want to see or deal with this code.
+                    else if(args[0] == "--move")
                     {
                         if(!args[1].length == 3)
                         {
@@ -525,7 +554,22 @@ client.on('message', async message => {
                         else
                         {
                             let pos = args[1].split("");
-                            switch(pos[0])
+                            let loc = pos.map(element => {
+                                if(["U","L"].includes(element))
+                                {
+                                    return 0;
+                                }
+                                else if(["C","O"].includes(element))
+                                {
+                                    return 1;
+                                }
+                                else if(["D","R","X"].includes(element))
+                                {
+                                    return 2;
+                                }
+                            })
+                            tttboard[loc[0]][loc[1]] = loc[2];
+                            /*switch(pos[0]) // I can't believe I wrote this crap.
                             {
                                 case "U":
                                     switch(pos[1])
@@ -641,11 +685,12 @@ client.on('message', async message => {
                                         break;
                                     }
                                 break; // gon' burn it up
-                            }
+                            }*/
                         }
                     }
                     message.channel.send(parseboard(tttboard));
-                    switch(checkboard(tttboard))
+                    message.channel.send(checkboard(tttboard));
+                    /*switch(checkboard(tttboard))
                     {
                         case false:
                             message.channel.send(`No winner yet...`);
@@ -653,7 +698,7 @@ client.on('message', async message => {
                         default:
                             message.channel.send(`The winner is: ${checkboard(tttboard) || "Larson fucked up."}`);
                         break;
-                    }
+                    }*/
                 break;
 }
     }

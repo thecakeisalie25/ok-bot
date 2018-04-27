@@ -1,5 +1,4 @@
 const  {prefix, token, admin, pollschannelid, wednesdaychannelid, bgcolor, fgcolor} = require ('./config.json');
-//const   commandlist = require ('./help.json');
 const   discord     = require('discord.js');
 const   jimp        = require('jimp');
 const   schedule    = require('node-schedule');
@@ -32,7 +31,7 @@ const   polls       = sequelize.define('polls', {
 
 const   votes       = sequelize.define('votes', {
     poll:             Sequelize.INTEGER,
-    userid:           Sequelize.STRING,
+    userid:           {type: Sequelize.STRING, primarykey: true},
     vote:             Sequelize.INTEGER,
 })
 

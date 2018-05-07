@@ -256,12 +256,10 @@ client.on('message', async message => {
                 case "thotlist":
     
                     const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
-                    thotlist.sort(function (a,b)
-                        {
+                    thotlist.sort((a,b) => {
                             return b.count - a.count;
                         });
-                    thotlist.forEach(function(element, index, array) // TODO: arrow function
-                    {
+                    thotlist.forEach((element, index, array) => {
                         const thotuser = client.users.get(element.userid);
                         const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
                         message.channel.send(thottext)
@@ -402,7 +400,7 @@ client.on('message', async message => {
                         message.delete();
                         break;
                     }
-                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid. TODO: .foreach? || or pollsendid.includes?
+                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid. TODO: .foreach? || or pollsendid.includes? 
                     {
                         if (pollsendid[i][0].id == message.author.id) // If so... 
                         {

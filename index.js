@@ -86,6 +86,12 @@ client.on('guildMemberRemove', user => {
     console.log(user);
 })
 
+client.on('guildMemberUpdate', (oldUser, newUser) =>{
+    console.log(oldUser)
+    console.log(newUser)
+    
+})
+
 client.on('error', error => {
     console.log(error);
 });
@@ -256,7 +262,9 @@ client.on('message', async message => {
                 case "thotlist":
     
                     const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
-                    thotlist.sort(function (a,b)
+                    thotlist.
+                    
+                    (function (a,b)
                         {
                             return b.count - a.count;
                         });
@@ -698,6 +706,17 @@ client.on('message', async message => {
                             message.channel.send(`The winner is: ${checkboard(tttboard) || "Larson fucked up."}`);
                         break;
                     }*/
+                break;
+
+                case "gic":
+
+                    /* const commonguilds = this.guilds.filter(value => {
+                        if(value.members.array().includes(message.mentions.users.first()))
+                        {return true}else{return false}
+                    }) */
+                    message.channel.send(`None found.`);
+                    console.log(client);
+
                 break;
 }
     }

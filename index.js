@@ -89,7 +89,7 @@ client.on('guildMemberRemove', user => {
 client.on('guildMemberUpdate', (oldUser, newUser) =>{
     console.log(oldUser)
     console.log(newUser)
-    
+
 })
 
 client.on('error', error => {
@@ -262,14 +262,10 @@ client.on('message', async message => {
                 case "thotlist":
     
                     const thotlist  = await thots.findAll({attributes: [`userid`, `count`]});
-                    thotlist.
-                    
-                    (function (a,b)
-                        {
+                    thotlist.sort((a,b) => {
                             return b.count - a.count;
                         });
-                    thotlist.forEach(function(element, index, array) // TODO: arrow function
-                    {
+                    thotlist.forEach((element, index, array) => {
                         const thotuser = client.users.get(element.userid);
                         const thottext = `${index+1}. ${thotuser.username}: ${element.count}`;
                         message.channel.send(thottext)
@@ -410,7 +406,7 @@ client.on('message', async message => {
                         message.delete();
                         break;
                     }
-                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid. TODO: .foreach? || or pollsendid.includes?
+                    for (let i = 0; i < pollsendid.length; i++) // Check to see if the user has an existing pollsendid. TODO: .foreach? || or pollsendid.includes? 
                     {
                         if (pollsendid[i][0].id == message.author.id) // If so... 
                         {
@@ -576,124 +572,7 @@ client.on('message', async message => {
                                 }
                             })
                             tttboard[loc[0]][loc[1]] = loc[2];
-                            /*switch(pos[0]) // I can't believe I wrote this crap.
-                            {
-                                case "U":
-                                    switch(pos[1])
-                                    {
-                                        case "L":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[0][0] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[0][0] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "C":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[0][1] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[0][1] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "R":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[0][2] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[0][2] = 1;
-                                                break;
-                                            }
-                                        break;
-                                    }
-                                break;
-                                case "C":
-                                    switch(pos[1])
-                                    {
-                                        case "L":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[1][0] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[1][0] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "C":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[1][1] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[1][1] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "R":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[1][2] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[1][2] = 1;
-                                                break;
-                                            }
-                                        break;
-                                    }
-                                break;
-                                case "D":
-                                    switch(pos[1])
-                                    {
-                                        case "L":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[2][0] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[2][0] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "C":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[2][1] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[2][1] = 1;
-                                                break;
-                                            }
-                                        break;
-                                        case "R":
-                                            switch(pos[3])
-                                            {
-                                                case "X":
-                                                    tttboard[2][2] = 2;
-                                                break;
-                                                case "O":
-                                                    tttboard[2][2] = 1;
-                                                break;
-                                            }
-                                        break;
-                                    }
-                                break; // gon' burn it up
-                            }*/
-                        }
+                            }
                     }
                     message.channel.send(parseboard(tttboard));
                     message.channel.send(checkboard(tttboard));

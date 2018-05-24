@@ -89,7 +89,12 @@ client.on('guildMemberRemove', user => {
 client.on('guildMemberUpdate', (oldUser, newUser) =>{
     console.log(oldUser)
     console.log(newUser)
-
+    online_alerts.forEach(element => {
+        if(element.userid == newUser.id)
+        {
+            
+        }
+    })
 })
 
 client.on('error', error => {

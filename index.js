@@ -113,6 +113,7 @@ client.on('message', async message => {
             message.react(`🆗`) // ...React "OK" to their message.
         };
         if (message.content.toLocaleLowerCase().includes(`ur mom gay`)) {message.channel.send(`no u`)};
+        if (message.content.toLocaleLowerCase().includes(`no u`)) {message.channel.send(`no u u`)};
         if (message.content.toLocaleLowerCase().includes(`ur dad lesbian`)) {message.channel.send(`no u but like times a billion`)};
         if (message.content.match(/(?:r|u)\/.+?\b/gm)) // subreddit fix
         {

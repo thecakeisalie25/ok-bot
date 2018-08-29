@@ -42,7 +42,7 @@ let     pollsendid = [];
 let     trannybanny;
 let     tttboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
-const   userdetermine   = (message, mtext, multi = false) => {
+const   userdetermine   = (message, mtext = message.content, multi = false) => {
     // Arguments: Message object, text to match, boolean for multiple users.
     // Returns  : User object (or error)
     if(typeof(message)  !== "object" ) throw "First argument must be a message.";
@@ -143,7 +143,7 @@ client.on('message', async message => {
                 case "thumbs":
                 case "thumb":
     
-                    await message.react(`👍`)
+                    await message.react(`👍`) 
                     await message.react(`👎`)
     
                 break;
@@ -471,7 +471,7 @@ client.on('message', async message => {
                     }
                     else
                     {
-                        message.channel.send(`uh what`);
+                        message.channel.send(`uh what`)
                         message.channel.send(`uh`)
                         message.channel.send(`it landed on it's edge i guess`)
                     }
